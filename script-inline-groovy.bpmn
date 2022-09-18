@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:camunda="http://camunda.org/schema/1.0/bpmn" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:modeler="http://camunda.org/schema/modeler/1.0" id="Definitions_02xqgwq" targetNamespace="http://bpmn.io/schema/bpmn" exporter="Camunda Modeler" exporterVersion="4.8.1" modeler:executionPlatform="Camunda Platform" modeler:executionPlatformVersion="7.15.0">
+  <bpmn:process id="InlineScriptTaskProcess" name="Inline script task" isExecutable="true" camunda:versionTag="v1">
+    <bpmn:startEvent id="StartProcessStartEvent" name="Start process">
+      <bpmn:outgoing>Flow_0c3m4yc</bpmn:outgoing>
+    </bpmn:startEvent>
+    <bpmn:sequenceFlow id="Flow_0c3m4yc" sourceRef="StartProcessStartEvent" targetRef="OrderInitializerTask" />
+    <bpmn:endEvent id="EndProcessEndEvent" name="End Process">
+      <bpmn:incoming>Flow_1lquyp9</bpmn:incoming>
+    </bpmn:endEvent>
+    <bpmn:sequenceFlow id="Flow_0jheyrd" sourceRef="OrderInitializerTask" targetRef="ShipTheOrderTask" />
+    <bpmn:scriptTask id="OrderInitializerTask" name="Order initializer" scriptFormat="groovy">
+      <bpmn:incoming>Flow_0c3m4yc</bpmn:incoming>
+      <bpmn:outgoing>Flow_0jheyrd</bpmn:outgoing>
+      <bpmn:script>def name = "Sven De Smit"
+execution.setVariable("name",name)</bpmn:script>
+    </bpmn:scriptTask>
+    <bpmn:userTask id="ShipTheOrderTask" name="Ship the order" camunda:assignee="demo">
+      <bpmn:incoming>Flow_0jheyrd</bpmn:incoming>
+      <bpmn:outgoing>Flow_1lquyp9</bpmn:outgoing>
+    </bpmn:userTask>
+    <bpmn:sequenceFlow id="Flow_1lquyp9" sourceRef="ShipTheOrderTask" targetRef="EndProcessEndEvent" />
+    <bpmn:scriptTask id="Activity_0b2r6fk" camunda:resource="" />
+  </bpmn:process>
+  <bpmndi:BPMNDiagram id="BPMNDiagram_1">
+    <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="InlineScriptTaskProcess">
+      <bpmndi:BPMNEdge id="Flow_0c3m4yc_di" bpmnElement="Flow_0c3m4yc">
+        <di:waypoint x="215" y="117" />
+        <di:waypoint x="270" y="117" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0jheyrd_di" bpmnElement="Flow_0jheyrd">
+        <di:waypoint x="370" y="117" />
+        <di:waypoint x="440" y="117" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1lquyp9_di" bpmnElement="Flow_1lquyp9">
+        <di:waypoint x="540" y="117" />
+        <di:waypoint x="632" y="117" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNShape id="_BPMNShape_StartEvent_2" bpmnElement="StartProcessStartEvent">
+        <dc:Bounds x="179" y="99" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="165" y="142" width="66" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_0icfou8_di" bpmnElement="OrderInitializerTask">
+        <dc:Bounds x="270" y="77" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_0zuylau_di" bpmnElement="EndProcessEndEvent">
+        <dc:Bounds x="632" y="99" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="620" y="142" width="63" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_18dxlko_di" bpmnElement="ShipTheOrderTask">
+        <dc:Bounds x="440" y="77" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_04trhfp_di" bpmnElement="Activity_0b2r6fk">
+        <dc:Bounds x="410" y="360" width="100" height="80" />
+      </bpmndi:BPMNShape>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</bpmn:definitions>

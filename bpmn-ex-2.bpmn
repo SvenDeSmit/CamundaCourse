@@ -1,0 +1,109 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:bioc="http://bpmn.io/schema/bpmn/biocolor/1.0" xmlns:modeler="http://camunda.org/schema/modeler/1.0" id="Definitions_0jxluih" targetNamespace="http://bpmn.io/schema/bpmn" exporter="Camunda Modeler" exporterVersion="4.8.1" modeler:executionPlatform="Camunda Platform" modeler:executionPlatformVersion="7.15.0">
+  <bpmn:process id="BpmnExample2Process" name="Bpmn example 2" isExecutable="true">
+    <bpmn:startEvent id="OrderRecievedStartEvent" name="Order recieved">
+      <bpmn:outgoing>Flow_0uzo5lp</bpmn:outgoing>
+    </bpmn:startEvent>
+    <bpmn:sequenceFlow id="Flow_0uzo5lp" sourceRef="OrderRecievedStartEvent" targetRef="ValidateOrderTask" />
+    <bpmn:exclusiveGateway id="IsValidGateway" name="Is valid?">
+      <bpmn:incoming>Flow_1d3sgwp</bpmn:incoming>
+      <bpmn:outgoing>YesSequenceFlow</bpmn:outgoing>
+      <bpmn:outgoing>NoSequenceFlow</bpmn:outgoing>
+    </bpmn:exclusiveGateway>
+    <bpmn:sequenceFlow id="Flow_1d3sgwp" sourceRef="ValidateOrderTask" targetRef="IsValidGateway" />
+    <bpmn:sequenceFlow id="YesSequenceFlow" name="Yes" sourceRef="IsValidGateway" targetRef="ShipOrderTask">
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${test == 'ja'}</bpmn:conditionExpression>
+    </bpmn:sequenceFlow>
+    <bpmn:endEvent id="OrderShippedEndEvent" name="Order Shipped">
+      <bpmn:incoming>Flow_1rbwn4q</bpmn:incoming>
+    </bpmn:endEvent>
+    <bpmn:sequenceFlow id="Flow_1rbwn4q" sourceRef="ShipOrderTask" targetRef="OrderShippedEndEvent" />
+    <bpmn:sequenceFlow id="NoSequenceFlow" name="No" sourceRef="IsValidGateway" targetRef="CancelOrderTask">
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${test != 'ja'}</bpmn:conditionExpression>
+    </bpmn:sequenceFlow>
+    <bpmn:endEvent id="OrderCancelledEndEvent" name="Order Cancelled">
+      <bpmn:incoming>Flow_0cmatd2</bpmn:incoming>
+    </bpmn:endEvent>
+    <bpmn:sequenceFlow id="Flow_0cmatd2" sourceRef="CancelOrderTask" targetRef="OrderCancelledEndEvent" />
+    <bpmn:userTask id="ValidateOrderTask" name="Validate order">
+      <bpmn:incoming>Flow_0uzo5lp</bpmn:incoming>
+      <bpmn:outgoing>Flow_1d3sgwp</bpmn:outgoing>
+    </bpmn:userTask>
+    <bpmn:userTask id="ShipOrderTask" name="Ship order">
+      <bpmn:incoming>YesSequenceFlow</bpmn:incoming>
+      <bpmn:outgoing>Flow_1rbwn4q</bpmn:outgoing>
+    </bpmn:userTask>
+    <bpmn:userTask id="CancelOrderTask" name="Cancel order">
+      <bpmn:incoming>NoSequenceFlow</bpmn:incoming>
+      <bpmn:outgoing>Flow_0cmatd2</bpmn:outgoing>
+    </bpmn:userTask>
+  </bpmn:process>
+  <bpmndi:BPMNDiagram id="BPMNDiagram_1">
+    <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="BpmnExample2Process">
+      <bpmndi:BPMNEdge id="Flow_0uzo5lp_di" bpmnElement="Flow_0uzo5lp">
+        <di:waypoint x="215" y="117" />
+        <di:waypoint x="270" y="117" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1d3sgwp_di" bpmnElement="Flow_1d3sgwp">
+        <di:waypoint x="370" y="117" />
+        <di:waypoint x="425" y="117" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0o237jg_di" bpmnElement="YesSequenceFlow">
+        <di:waypoint x="475" y="117" />
+        <di:waypoint x="530" y="117" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="494" y="99" width="18" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1rbwn4q_di" bpmnElement="Flow_1rbwn4q">
+        <di:waypoint x="630" y="117" />
+        <di:waypoint x="692" y="117" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_028ex71_di" bpmnElement="NoSequenceFlow">
+        <di:waypoint x="450" y="142" />
+        <di:waypoint x="450" y="230" />
+        <di:waypoint x="530" y="230" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="458" y="183" width="15" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0cmatd2_di" bpmnElement="Flow_0cmatd2">
+        <di:waypoint x="630" y="230" />
+        <di:waypoint x="692" y="230" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNShape id="_BPMNShape_StartEvent_2" bpmnElement="OrderRecievedStartEvent">
+        <dc:Bounds x="179" y="99" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="162" y="142" width="73" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Gateway_1522qo7_di" bpmnElement="IsValidGateway" isMarkerVisible="true">
+        <dc:Bounds x="425" y="92" width="50" height="50" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="430" y="62" width="41" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_14zkagq_di" bpmnElement="OrderShippedEndEvent">
+        <dc:Bounds x="692" y="99" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="676" y="142" width="72" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_1cjusie_di" bpmnElement="OrderCancelledEndEvent">
+        <dc:Bounds x="692" y="212" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="670" y="255" width="81" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_0rogu6p_di" bpmnElement="ValidateOrderTask" bioc:stroke="rgb(251, 140, 0)" bioc:fill="rgb(255, 224, 178)">
+        <dc:Bounds x="270" y="77" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_1cnge1w_di" bpmnElement="ShipOrderTask" bioc:stroke="rgb(67, 160, 71)" bioc:fill="rgb(200, 230, 201)">
+        <dc:Bounds x="530" y="77" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_1o0dwz1_di" bpmnElement="CancelOrderTask" bioc:stroke="rgb(229, 57, 53)" bioc:fill="rgb(255, 205, 210)">
+        <dc:Bounds x="530" y="190" width="100" height="80" />
+      </bpmndi:BPMNShape>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</bpmn:definitions>

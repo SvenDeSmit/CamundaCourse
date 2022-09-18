@@ -1,0 +1,3 @@
+
+def name = "Sven De Smit"
+execution.setVariable("name",name)

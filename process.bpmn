@@ -1,0 +1,171 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:camunda="http://camunda.org/schema/1.0/bpmn" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:modeler="http://camunda.org/schema/modeler/1.0" id="Definitions_05rpdna" targetNamespace="http://bpmn.io/schema/bpmn" exporter="Camunda Modeler" exporterVersion="4.8.1" modeler:executionPlatform="Camunda Platform" modeler:executionPlatformVersion="7.15.0">
+  <bpmn:process id="ErrorhandlingProcess" name="error-handling" isExecutable="true" camunda:versionTag="v1">
+    <bpmn:startEvent id="OrderReceivedStartEvent" name="Order received">
+      <bpmn:outgoing>Flow_1lmbzt2</bpmn:outgoing>
+    </bpmn:startEvent>
+    <bpmn:sequenceFlow id="Flow_1lmbzt2" sourceRef="OrderReceivedStartEvent" targetRef="ReceiveTheOrderTask" />
+    <bpmn:subProcess id="Activity_0czt0rq">
+      <bpmn:incoming>Flow_111hzqd</bpmn:incoming>
+      <bpmn:outgoing>Flow_0hw8s2v</bpmn:outgoing>
+      <bpmn:startEvent id="InventoryCheckRequestedStartEvent" name="Inventory check requested">
+        <bpmn:outgoing>Flow_0zzvi76</bpmn:outgoing>
+      </bpmn:startEvent>
+      <bpmn:sequenceFlow id="Flow_0zzvi76" sourceRef="InventoryCheckRequestedStartEvent" targetRef="CheckInventoryTask" />
+      <bpmn:endEvent id="InventoryCheckSuccessEndEvent" name="Inventory check success">
+        <bpmn:incoming>Flow_1447yek</bpmn:incoming>
+      </bpmn:endEvent>
+      <bpmn:sequenceFlow id="Flow_1447yek" sourceRef="CheckInventoryTask" targetRef="InventoryCheckSuccessEndEvent" />
+      <bpmn:sequenceFlow id="Flow_1100wuh" sourceRef="OrderNotAvailableBoundaryEvent" targetRef="OrderNotAvailableErrorEndEvent" />
+      <bpmn:boundaryEvent id="OrderNotAvailableBoundaryEvent" name="Order not available" attachedToRef="CheckInventoryTask">
+        <bpmn:outgoing>Flow_1100wuh</bpmn:outgoing>
+        <bpmn:errorEventDefinition id="ErrorEventDefinition_0nxx94c" errorRef="Error_0957mnz" />
+      </bpmn:boundaryEvent>
+      <bpmn:endEvent id="OrderNotAvailableErrorEndEvent" name="Order not available error">
+        <bpmn:incoming>Flow_1100wuh</bpmn:incoming>
+        <bpmn:errorEventDefinition id="ErrorEventDefinition_0q590e4" errorRef="Error_0957mnz" />
+      </bpmn:endEvent>
+      <bpmn:serviceTask id="CheckInventoryTask" name="Check inventory" camunda:class="sven.camunda.projects.errorhandling.tasks.InventoryService">
+        <bpmn:incoming>Flow_0zzvi76</bpmn:incoming>
+        <bpmn:outgoing>Flow_1447yek</bpmn:outgoing>
+      </bpmn:serviceTask>
+    </bpmn:subProcess>
+    <bpmn:sequenceFlow id="Flow_111hzqd" sourceRef="ReceiveTheOrderTask" targetRef="Activity_0czt0rq" />
+    <bpmn:sequenceFlow id="Flow_0hw8s2v" sourceRef="Activity_0czt0rq" targetRef="ShipOrderTask" />
+    <bpmn:endEvent id="OrderShippedEndEvent" name="Order shipped">
+      <bpmn:incoming>Flow_05zc2tp</bpmn:incoming>
+    </bpmn:endEvent>
+    <bpmn:sequenceFlow id="Flow_05zc2tp" sourceRef="ShipOrderTask" targetRef="OrderShippedEndEvent" />
+    <bpmn:endEvent id="ProcessEndedWithErrorEndEvent" name="Process ended with error">
+      <bpmn:incoming>Flow_1ecvf4r</bpmn:incoming>
+    </bpmn:endEvent>
+    <bpmn:sequenceFlow id="Flow_1ecvf4r" sourceRef="TakeActionToResolveErrorTask" targetRef="ProcessEndedWithErrorEndEvent" />
+    <bpmn:userTask id="ReceiveTheOrderTask" name="Receive the order" camunda:assignee="demo">
+      <bpmn:extensionElements>
+        <camunda:formData>
+          <camunda:formField id="productCode" label="productCode" type="string" />
+        </camunda:formData>
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_1lmbzt2</bpmn:incoming>
+      <bpmn:outgoing>Flow_111hzqd</bpmn:outgoing>
+    </bpmn:userTask>
+    <bpmn:userTask id="TakeActionToResolveErrorTask" name="Take action to resolve error" camunda:assignee="demo">
+      <bpmn:incoming>Flow_1str6ax</bpmn:incoming>
+      <bpmn:outgoing>Flow_1ecvf4r</bpmn:outgoing>
+    </bpmn:userTask>
+    <bpmn:userTask id="ShipOrderTask" name="Ship order" camunda:assignee="demo">
+      <bpmn:incoming>Flow_0hw8s2v</bpmn:incoming>
+      <bpmn:outgoing>Flow_05zc2tp</bpmn:outgoing>
+    </bpmn:userTask>
+    <bpmn:boundaryEvent id="ErrorEventBoundaryEvent" name="Error Event" attachedToRef="Activity_0czt0rq">
+      <bpmn:outgoing>Flow_1str6ax</bpmn:outgoing>
+      <bpmn:errorEventDefinition id="ErrorEventDefinition_17xm862" />
+    </bpmn:boundaryEvent>
+    <bpmn:sequenceFlow id="Flow_1str6ax" sourceRef="ErrorEventBoundaryEvent" targetRef="TakeActionToResolveErrorTask" />
+  </bpmn:process>
+  <bpmn:error id="Error_0957mnz" name="PRODUCT_NOT_AVAILABLE" errorCode="PRODUCT_NOT_AVAILABLE" />
+  <bpmndi:BPMNDiagram id="BPMNDiagram_1">
+    <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="ErrorhandlingProcess">
+      <bpmndi:BPMNEdge id="Flow_1lmbzt2_di" bpmnElement="Flow_1lmbzt2">
+        <di:waypoint x="215" y="177" />
+        <di:waypoint x="270" y="177" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_111hzqd_di" bpmnElement="Flow_111hzqd">
+        <di:waypoint x="370" y="177" />
+        <di:waypoint x="470" y="177" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0hw8s2v_di" bpmnElement="Flow_0hw8s2v">
+        <di:waypoint x="820" y="177" />
+        <di:waypoint x="920" y="177" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_05zc2tp_di" bpmnElement="Flow_05zc2tp">
+        <di:waypoint x="1020" y="177" />
+        <di:waypoint x="1122" y="177" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1ecvf4r_di" bpmnElement="Flow_1ecvf4r">
+        <di:waypoint x="820" y="430" />
+        <di:waypoint x="872" y="430" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1str6ax_di" bpmnElement="Flow_1str6ax">
+        <di:waypoint x="650" y="368" />
+        <di:waypoint x="650" y="430" />
+        <di:waypoint x="720" y="430" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNShape id="_BPMNShape_StartEvent_2" bpmnElement="OrderReceivedStartEvent">
+        <dc:Bounds x="179" y="159" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="161" y="202" width="73" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_0rj79ce_di" bpmnElement="OrderShippedEndEvent">
+        <dc:Bounds x="1122" y="159" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="1105" y="202" width="70" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_0g7cb9i_di" bpmnElement="ReceiveTheOrderTask">
+        <dc:Bounds x="270" y="137" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_17ysxhp_di" bpmnElement="ProcessEndedWithErrorEndEvent">
+        <dc:Bounds x="872" y="412" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="853" y="455" width="74" height="27" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_1rk7bct_di" bpmnElement="TakeActionToResolveErrorTask">
+        <dc:Bounds x="720" y="390" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_18cwx4p_di" bpmnElement="ShipOrderTask">
+        <dc:Bounds x="920" y="137" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_0czt0rq_di" bpmnElement="Activity_0czt0rq" isExpanded="true">
+        <dc:Bounds x="470" y="77" width="350" height="273" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="Flow_0zzvi76_di" bpmnElement="Flow_0zzvi76">
+        <di:waypoint x="546" y="150" />
+        <di:waypoint x="600" y="150" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1447yek_di" bpmnElement="Flow_1447yek">
+        <di:waypoint x="700" y="150" />
+        <di:waypoint x="762" y="150" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1100wuh_di" bpmnElement="Flow_1100wuh">
+        <di:waypoint x="650" y="208" />
+        <di:waypoint x="650" y="252" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNShape id="Event_1xcurbr_di" bpmnElement="InventoryCheckRequestedStartEvent">
+        <dc:Bounds x="510" y="132" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="489" y="175" width="78" height="27" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_09cr291_di" bpmnElement="InventoryCheckSuccessEndEvent">
+        <dc:Bounds x="762" y="132" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="741" y="175" width="78" height="27" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_0p3934c_di" bpmnElement="OrderNotAvailableErrorEndEvent">
+        <dc:Bounds x="632" y="252" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="617" y="295" width="72" height="27" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_01pbpc6_di" bpmnElement="CheckInventoryTask">
+        <dc:Bounds x="600" y="110" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_0j95wxe_di" bpmnElement="OrderNotAvailableBoundaryEvent">
+        <dc:Bounds x="632" y="172" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="627" y="215" width="48" height="27" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_1qcsf83_di" bpmnElement="ErrorEventBoundaryEvent">
+        <dc:Bounds x="632" y="332" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="622" y="375" width="57" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</bpmn:definitions>

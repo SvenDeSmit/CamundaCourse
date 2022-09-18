@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:camunda="http://camunda.org/schema/1.0/bpmn" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:modeler="http://camunda.org/schema/modeler/1.0" id="Definitions_1aydfxp" targetNamespace="http://bpmn.io/schema/bpmn" exporter="Camunda Modeler" exporterVersion="4.8.1" modeler:executionPlatform="Camunda Platform" modeler:executionPlatformVersion="7.15.0">
+  <bpmn:process id="ExpressionServiceTaskProcess" name="Expression Service task" isExecutable="true" camunda:versionTag="v1.0">
+    <bpmn:startEvent id="ProcessStartedStartEvent" name="Process started">
+      <bpmn:outgoing>Flow_0ucjo7a</bpmn:outgoing>
+    </bpmn:startEvent>
+    <bpmn:sequenceFlow id="Flow_0ucjo7a" sourceRef="ProcessStartedStartEvent" targetRef="ExpressionServiceTaskTask" />
+    <bpmn:sequenceFlow id="Flow_0fgoaqw" sourceRef="ExpressionServiceTaskTask" targetRef="WatchTheDataTask" />
+    <bpmn:endEvent id="ProcessEndedEndEvent" name="Process ended">
+      <bpmn:incoming>Flow_17a7f5o</bpmn:incoming>
+    </bpmn:endEvent>
+    <bpmn:sequenceFlow id="Flow_17a7f5o" sourceRef="WatchTheDataTask" targetRef="ProcessEndedEndEvent" />
+    <bpmn:userTask id="WatchTheDataTask" name="Watch the data">
+      <bpmn:incoming>Flow_0fgoaqw</bpmn:incoming>
+      <bpmn:outgoing>Flow_17a7f5o</bpmn:outgoing>
+    </bpmn:userTask>
+    <bpmn:serviceTask id="ExpressionServiceTaskTask" name="Expression Service Task" camunda:expression="${execution.setVariable(&#34;name&#34;,&#34;Sven&#34;)}">
+      <bpmn:incoming>Flow_0ucjo7a</bpmn:incoming>
+      <bpmn:outgoing>Flow_0fgoaqw</bpmn:outgoing>
+    </bpmn:serviceTask>
+  </bpmn:process>
+  <bpmndi:BPMNDiagram id="BPMNDiagram_1">
+    <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="ExpressionServiceTaskProcess">
+      <bpmndi:BPMNEdge id="Flow_0ucjo7a_di" bpmnElement="Flow_0ucjo7a">
+        <di:waypoint x="215" y="117" />
+        <di:waypoint x="270" y="117" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0fgoaqw_di" bpmnElement="Flow_0fgoaqw">
+        <di:waypoint x="370" y="117" />
+        <di:waypoint x="430" y="117" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_17a7f5o_di" bpmnElement="Flow_17a7f5o">
+        <di:waypoint x="530" y="117" />
+        <di:waypoint x="592" y="117" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNShape id="_BPMNShape_StartEvent_2" bpmnElement="ProcessStartedStartEvent">
+        <dc:Bounds x="179" y="99" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="159" y="142" width="77" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_0eglevq_di" bpmnElement="ProcessEndedEndEvent">
+        <dc:Bounds x="592" y="99" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="573" y="142" width="74" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_1kjm54h_di" bpmnElement="WatchTheDataTask">
+        <dc:Bounds x="430" y="77" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_08rokp7_di" bpmnElement="ExpressionServiceTaskTask">
+        <dc:Bounds x="270" y="77" width="100" height="80" />
+      </bpmndi:BPMNShape>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</bpmn:definitions>

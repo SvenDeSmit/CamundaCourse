@@ -1,0 +1,11 @@
+def orderName = "Pizza"
+execution.setVariable("orderName",orderName)
+def deliveryType = "self pickup"
+execution.setVariable("deliveryType",deliveryType)
+def orderType = "Mobile"
+execution.setVariable("orderType",orderType)
+
+def orderName = "Pizza"
+def deliveryType = "self pickup"
+execution.setVariable("order",orderName)
+execution.setVariable("type",orderType)

@@ -1,0 +1,140 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:camunda="http://camunda.org/schema/1.0/bpmn" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:modeler="http://camunda.org/schema/modeler/1.0" id="Definitions_07olq83" targetNamespace="http://bpmn.io/schema/bpmn" exporter="Camunda Modeler" exporterVersion="4.8.1" modeler:executionPlatform="Camunda Platform" modeler:executionPlatformVersion="7.15.0">
+  <bpmn:process id="GatewayORJoinProcess" name="Gateway OR Join" isExecutable="true" camunda:versionTag="v1">
+    <bpmn:startEvent id="ProcStartedStartEvent" name="proc started">
+      <bpmn:outgoing>Flow_1homr1i</bpmn:outgoing>
+    </bpmn:startEvent>
+    <bpmn:sequenceFlow id="Flow_1homr1i" sourceRef="ProcStartedStartEvent" targetRef="EnterTypeAndCertTask" />
+    <bpmn:sequenceFlow id="Flow_1u1j8kw" sourceRef="EnterTypeAndCertTask" targetRef="Gateway_1f9ixgl" />
+    <bpmn:inclusiveGateway id="Gateway_1f9ixgl">
+      <bpmn:incoming>Flow_1u1j8kw</bpmn:incoming>
+      <bpmn:outgoing>Flow_0l0d1w1</bpmn:outgoing>
+      <bpmn:outgoing>Flow_08frghn</bpmn:outgoing>
+      <bpmn:outgoing>Flow_0yb0xkj</bpmn:outgoing>
+    </bpmn:inclusiveGateway>
+    <bpmn:sequenceFlow id="Flow_0l0d1w1" sourceRef="Gateway_1f9ixgl" targetRef="ATask">
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${type == "A"}</bpmn:conditionExpression>
+    </bpmn:sequenceFlow>
+    <bpmn:sequenceFlow id="Flow_08frghn" sourceRef="Gateway_1f9ixgl" targetRef="BTask">
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${type == "B"}</bpmn:conditionExpression>
+    </bpmn:sequenceFlow>
+    <bpmn:sequenceFlow id="Flow_0yb0xkj" sourceRef="Gateway_1f9ixgl" targetRef="CertTask">
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${cert == true}</bpmn:conditionExpression>
+    </bpmn:sequenceFlow>
+    <bpmn:sequenceFlow id="Flow_1bgr8e6" sourceRef="ATask" targetRef="Gateway_1d80mtj" />
+    <bpmn:inclusiveGateway id="Gateway_1d80mtj">
+      <bpmn:incoming>Flow_1bgr8e6</bpmn:incoming>
+      <bpmn:incoming>Flow_0mcukii</bpmn:incoming>
+      <bpmn:incoming>Flow_1ew95gk</bpmn:incoming>
+      <bpmn:outgoing>Flow_0mwag4y</bpmn:outgoing>
+    </bpmn:inclusiveGateway>
+    <bpmn:sequenceFlow id="Flow_0mcukii" sourceRef="BTask" targetRef="Gateway_1d80mtj" />
+    <bpmn:sequenceFlow id="Flow_1ew95gk" sourceRef="CertTask" targetRef="Gateway_1d80mtj" />
+    <bpmn:sequenceFlow id="Flow_0mwag4y" sourceRef="Gateway_1d80mtj" targetRef="CheckTask" />
+    <bpmn:endEvent id="ProcEndedEndEvent" name="proc ended">
+      <bpmn:incoming>Flow_1vj19vy</bpmn:incoming>
+    </bpmn:endEvent>
+    <bpmn:sequenceFlow id="Flow_1vj19vy" sourceRef="CheckTask" targetRef="ProcEndedEndEvent" />
+    <bpmn:userTask id="EnterTypeAndCertTask" name="Enter type and cert?">
+      <bpmn:incoming>Flow_1homr1i</bpmn:incoming>
+      <bpmn:outgoing>Flow_1u1j8kw</bpmn:outgoing>
+    </bpmn:userTask>
+    <bpmn:userTask id="ATask" name="A">
+      <bpmn:incoming>Flow_0l0d1w1</bpmn:incoming>
+      <bpmn:outgoing>Flow_1bgr8e6</bpmn:outgoing>
+    </bpmn:userTask>
+    <bpmn:userTask id="BTask" name="B">
+      <bpmn:incoming>Flow_08frghn</bpmn:incoming>
+      <bpmn:outgoing>Flow_0mcukii</bpmn:outgoing>
+    </bpmn:userTask>
+    <bpmn:userTask id="CheckTask" name="Check">
+      <bpmn:incoming>Flow_0mwag4y</bpmn:incoming>
+      <bpmn:outgoing>Flow_1vj19vy</bpmn:outgoing>
+    </bpmn:userTask>
+    <bpmn:serviceTask id="CertTask" name="Cert" camunda:class="">
+      <bpmn:incoming>Flow_0yb0xkj</bpmn:incoming>
+      <bpmn:outgoing>Flow_1ew95gk</bpmn:outgoing>
+    </bpmn:serviceTask>
+  </bpmn:process>
+  <bpmndi:BPMNDiagram id="BPMNDiagram_1">
+    <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="GatewayORJoinProcess">
+      <bpmndi:BPMNEdge id="Flow_1vj19vy_di" bpmnElement="Flow_1vj19vy">
+        <di:waypoint x="890" y="117" />
+        <di:waypoint x="952" y="117" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0mwag4y_di" bpmnElement="Flow_0mwag4y">
+        <di:waypoint x="735" y="117" />
+        <di:waypoint x="790" y="117" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1ew95gk_di" bpmnElement="Flow_1ew95gk">
+        <di:waypoint x="630" y="340" />
+        <di:waypoint x="710" y="340" />
+        <di:waypoint x="710" y="142" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0mcukii_di" bpmnElement="Flow_0mcukii">
+        <di:waypoint x="630" y="230" />
+        <di:waypoint x="710" y="230" />
+        <di:waypoint x="710" y="142" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1bgr8e6_di" bpmnElement="Flow_1bgr8e6">
+        <di:waypoint x="630" y="117" />
+        <di:waypoint x="685" y="117" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0yb0xkj_di" bpmnElement="Flow_0yb0xkj">
+        <di:waypoint x="450" y="142" />
+        <di:waypoint x="450" y="340" />
+        <di:waypoint x="530" y="340" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_08frghn_di" bpmnElement="Flow_08frghn">
+        <di:waypoint x="450" y="142" />
+        <di:waypoint x="450" y="230" />
+        <di:waypoint x="530" y="230" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0l0d1w1_di" bpmnElement="Flow_0l0d1w1">
+        <di:waypoint x="475" y="117" />
+        <di:waypoint x="530" y="117" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1u1j8kw_di" bpmnElement="Flow_1u1j8kw">
+        <di:waypoint x="370" y="117" />
+        <di:waypoint x="425" y="117" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1homr1i_di" bpmnElement="Flow_1homr1i">
+        <di:waypoint x="215" y="117" />
+        <di:waypoint x="270" y="117" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNShape id="_BPMNShape_StartEvent_2" bpmnElement="ProcStartedStartEvent">
+        <dc:Bounds x="179" y="99" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="168" y="142" width="59" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Gateway_14dki21_di" bpmnElement="Gateway_1f9ixgl">
+        <dc:Bounds x="425" y="92" width="50" height="50" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Gateway_1wymct9_di" bpmnElement="Gateway_1d80mtj">
+        <dc:Bounds x="685" y="92" width="50" height="50" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_1y93noz_di" bpmnElement="ProcEndedEndEvent">
+        <dc:Bounds x="952" y="99" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="942" y="142" width="56" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_0eotia8_di" bpmnElement="EnterTypeAndCertTask">
+        <dc:Bounds x="270" y="77" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_1lhfndo_di" bpmnElement="ATask">
+        <dc:Bounds x="530" y="77" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_17kagup_di" bpmnElement="BTask">
+        <dc:Bounds x="530" y="190" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_0ibm3w8_di" bpmnElement="CheckTask">
+        <dc:Bounds x="790" y="77" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_0d8v4dc_di" bpmnElement="CertTask">
+        <dc:Bounds x="530" y="300" width="100" height="80" />
+      </bpmndi:BPMNShape>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</bpmn:definitions>

@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<definitions xmlns="https://www.omg.org/spec/DMN/20191111/MODEL/" xmlns:dmndi="https://www.omg.org/spec/DMN/20191111/DMNDI/" xmlns:dc="http://www.omg.org/spec/DMN/20180521/DC/" id="simple-rule" name="simple-rule" namespace="http://camunda.org/schema/1.0/dmn" exporter="Camunda Modeler" exporterVersion="4.8.1">
+  <decision id="simple-rule-dec" name="simple-rule-dec">
+    <decisionTable id="simple-decision-table" hitPolicy="FIRST">
+      <input id="Input_1" label="provider">
+        <inputExpression id="InputExpression_1" typeRef="string">
+          <text>provider</text>
+        </inputExpression>
+      </input>
+      <input id="InputClause_06nyhgf" label="edition">
+        <inputExpression id="LiteralExpression_0jca2oa" typeRef="string">
+          <text>edition</text>
+        </inputExpression>
+      </input>
+      <output id="Output_1" name="price" typeRef="integer" />
+      <rule id="DecisionRule_10bxxbj">
+        <inputEntry id="UnaryTests_0v4859p">
+          <text>"AWS"</text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_1opnlzv">
+          <text>"Community"</text>
+        </inputEntry>
+        <outputEntry id="LiteralExpression_00e4oj9">
+          <text>100</text>
+        </outputEntry>
+      </rule>
+      <rule id="DecisionRule_1eww44f">
+        <inputEntry id="UnaryTests_0frgoy7">
+          <text>"AWS"</text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_11pahvx">
+          <text>"Enterprise"</text>
+        </inputEntry>
+        <outputEntry id="LiteralExpression_1vylpy7">
+          <text>1000</text>
+        </outputEntry>
+      </rule>
+      <rule id="DecisionRule_0lgj2l0">
+        <inputEntry id="UnaryTests_0ibho0o">
+          <text>"GCP"</text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_0gc15s1">
+          <text>"Community"</text>
+        </inputEntry>
+        <outputEntry id="LiteralExpression_1s5hkl0">
+          <text>90</text>
+        </outputEntry>
+      </rule>
+      <rule id="DecisionRule_1erl0dz">
+        <inputEntry id="UnaryTests_0kkp9ys">
+          <text>"GCP"</text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_1p5a49i">
+          <text>"Enterprise"</text>
+        </inputEntry>
+        <outputEntry id="LiteralExpression_0bnql3o">
+          <text>900</text>
+        </outputEntry>
+      </rule>
+    </decisionTable>
+  </decision>
+  <dmndi:DMNDI>
+    <dmndi:DMNDiagram>
+      <dmndi:DMNShape dmnElementRef="simple-rule-dec">
+        <dc:Bounds height="80" width="180" x="160" y="100" />
+      </dmndi:DMNShape>
+    </dmndi:DMNDiagram>
+  </dmndi:DMNDI>
+</definitions>

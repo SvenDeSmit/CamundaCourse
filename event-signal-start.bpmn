@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:camunda="http://camunda.org/schema/1.0/bpmn" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:modeler="http://camunda.org/schema/modeler/1.0" id="Definitions_1igk28w" targetNamespace="http://bpmn.io/schema/bpmn" exporter="Camunda Modeler" exporterVersion="4.8.1" modeler:executionPlatform="Camunda Platform" modeler:executionPlatformVersion="7.15.0">
+  <bpmn:collaboration id="Collaboration_0i99m8a">
+    <bpmn:participant id="SignalAsStartEventParticipant" name="Signal As Start Event" processRef="Process_0uizjde" />
+  </bpmn:collaboration>
+  <bpmn:process id="Process_0uizjde" name="SignalAsStartEvent" isExecutable="true" camunda:versionTag="v1.0">
+    <bpmn:laneSet id="LaneSet_0fo3u7q">
+      <bpmn:lane id="SendSignalLane" name="Send Signal">
+        <bpmn:flowNodeRef>StartEventStartEvent</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>SignalEndEventEndEvent</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>SendSignalTask</bpmn:flowNodeRef>
+      </bpmn:lane>
+      <bpmn:lane id="RecieveSignalALane" name="Recieve Signal A">
+        <bpmn:flowNodeRef>SignalStartAStartEvent</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Event_1hiv2xe</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>SignalReceivedATask</bpmn:flowNodeRef>
+      </bpmn:lane>
+    </bpmn:laneSet>
+    <bpmn:startEvent id="StartEventStartEvent" name="Start Event">
+      <bpmn:outgoing>Flow_1mnksef</bpmn:outgoing>
+    </bpmn:startEvent>
+    <bpmn:endEvent id="SignalEndEventEndEvent" name="Signal End Event">
+      <bpmn:incoming>Flow_0z01vpz</bpmn:incoming>
+      <bpmn:signalEventDefinition id="SignalEventDefinition_0wc4j48" signalRef="Signal_0spin44" />
+    </bpmn:endEvent>
+    <bpmn:startEvent id="SignalStartAStartEvent" name="SignalStartA">
+      <bpmn:outgoing>Flow_0idmwyy</bpmn:outgoing>
+      <bpmn:signalEventDefinition id="SignalEventDefinition_0fb2q5w" signalRef="Signal_0spin44" />
+    </bpmn:startEvent>
+    <bpmn:userTask id="SendSignalTask" name="Send signal">
+      <bpmn:incoming>Flow_1mnksef</bpmn:incoming>
+      <bpmn:outgoing>Flow_0z01vpz</bpmn:outgoing>
+    </bpmn:userTask>
+    <bpmn:endEvent id="Event_1hiv2xe">
+      <bpmn:incoming>Flow_1dg6fw5</bpmn:incoming>
+    </bpmn:endEvent>
+    <bpmn:userTask id="SignalReceivedATask" name="Signal Received A">
+      <bpmn:incoming>Flow_0idmwyy</bpmn:incoming>
+      <bpmn:outgoing>Flow_1dg6fw5</bpmn:outgoing>
+    </bpmn:userTask>
+    <bpmn:sequenceFlow id="Flow_1mnksef" sourceRef="StartEventStartEvent" targetRef="SendSignalTask" />
+    <bpmn:sequenceFlow id="Flow_0z01vpz" sourceRef="SendSignalTask" targetRef="SignalEndEventEndEvent" />
+    <bpmn:sequenceFlow id="Flow_0idmwyy" sourceRef="SignalStartAStartEvent" targetRef="SignalReceivedATask" />
+    <bpmn:sequenceFlow id="Flow_1dg6fw5" sourceRef="SignalReceivedATask" targetRef="Event_1hiv2xe" />
+  </bpmn:process>
+  <bpmn:signal id="Signal_0spin44" name="SignalPublish" />
+  <bpmndi:BPMNDiagram id="BPMNDiagram_1">
+    <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="Collaboration_0i99m8a">
+      <bpmndi:BPMNShape id="Participant_1awag4x_di" bpmnElement="SignalAsStartEventParticipant" isHorizontal="true">
+        <dc:Bounds x="129" y="79" width="600" height="381" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Lane_1mqm6hw_di" bpmnElement="SendSignalLane" isHorizontal="true">
+        <dc:Bounds x="159" y="79" width="570" height="120" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Lane_0c45cfm_di" bpmnElement="RecieveSignalALane" isHorizontal="true">
+        <dc:Bounds x="159" y="199" width="570" height="261" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="Flow_1mnksef_di" bpmnElement="Flow_1mnksef">
+        <di:waypoint x="215" y="140" />
+        <di:waypoint x="270" y="140" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0z01vpz_di" bpmnElement="Flow_0z01vpz">
+        <di:waypoint x="370" y="140" />
+        <di:waypoint x="432" y="140" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0idmwyy_di" bpmnElement="Flow_0idmwyy">
+        <di:waypoint x="215" y="260" />
+        <di:waypoint x="270" y="260" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1dg6fw5_di" bpmnElement="Flow_1dg6fw5">
+        <di:waypoint x="370" y="260" />
+        <di:waypoint x="432" y="260" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNShape id="_BPMNShape_StartEvent_2" bpmnElement="StartEventStartEvent">
+        <dc:Bounds x="179" y="122" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="170" y="165" width="56" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_1czvia0_di" bpmnElement="SignalEndEventEndEvent">
+        <dc:Bounds x="432" y="122" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="408" y="165" width="86" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_1mkdw2a_di" bpmnElement="SignalStartAStartEvent">
+        <dc:Bounds x="179" y="242" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="168" y="285" width="62" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_0rrl6ka_di" bpmnElement="SendSignalTask">
+        <dc:Bounds x="270" y="100" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_1hiv2xe_di" bpmnElement="Event_1hiv2xe">
+        <dc:Bounds x="432" y="242" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_14kbgex_di" bpmnElement="SignalReceivedATask">
+        <dc:Bounds x="270" y="220" width="100" height="80" />
+      </bpmndi:BPMNShape>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</bpmn:definitions>

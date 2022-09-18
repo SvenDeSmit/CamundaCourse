@@ -1,0 +1,301 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:camunda="http://camunda.org/schema/1.0/bpmn" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:modeler="http://camunda.org/schema/modeler/1.0" id="Definitions_1ee9q2h" targetNamespace="http://bpmn.io/schema/bpmn" exporter="Camunda Modeler" exporterVersion="4.8.1" modeler:executionPlatform="Camunda Platform" modeler:executionPlatformVersion="7.15.0">
+  <bpmn:process id="Ibotdemo1Process" name="ibot-demo-1" isExecutable="true" camunda:versionTag="v1">
+    <bpmn:startEvent id="RealEstateInfoRequestReceivedStartEvent" name="Real Estate info request received">
+      <bpmn:outgoing>Flow_0ho397v</bpmn:outgoing>
+    </bpmn:startEvent>
+    <bpmn:sequenceFlow id="Flow_0ho397v" sourceRef="RealEstateInfoRequestReceivedStartEvent" targetRef="Gateway_0wvqv9r" />
+    <bpmn:sequenceFlow id="Flow_0g7hla2" sourceRef="SelectRequiredInformationSourcesTask" targetRef="Gateway_0wchv5j" />
+    <bpmn:inclusiveGateway id="Gateway_0mkeicn" default="Flow_04z7z6y">
+      <bpmn:incoming>Flow_1spuo0f</bpmn:incoming>
+      <bpmn:outgoing>Flow_1lg4g1q</bpmn:outgoing>
+      <bpmn:outgoing>Flow_02rvmbs</bpmn:outgoing>
+      <bpmn:outgoing>Flow_0opb1p0</bpmn:outgoing>
+      <bpmn:outgoing>Flow_04z7z6y</bpmn:outgoing>
+    </bpmn:inclusiveGateway>
+    <bpmn:sequenceFlow id="Flow_1lg4g1q" sourceRef="Gateway_0mkeicn" targetRef="SendRequestToCadasterServiceTask">
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${needsCadasterInfo == true}</bpmn:conditionExpression>
+    </bpmn:sequenceFlow>
+    <bpmn:sequenceFlow id="Flow_02rvmbs" sourceRef="Gateway_0mkeicn" targetRef="SendRequestToCertibeauServiceTask">
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${needsCertibeauInfo == true}</bpmn:conditionExpression>
+    </bpmn:sequenceFlow>
+    <bpmn:sequenceFlow id="Flow_0opb1p0" sourceRef="Gateway_0mkeicn" targetRef="SendRequestToAUSARUServiceTask">
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${needsAUSARUInfo == true}</bpmn:conditionExpression>
+    </bpmn:sequenceFlow>
+    <bpmn:sequenceFlow id="Flow_1n7d36x" sourceRef="SendRequestToCadasterServiceTask" targetRef="WaitForResultEventForTheRequestToTheCadasterServiceEvent" />
+    <bpmn:inclusiveGateway id="Gateway_1juq8fq">
+      <bpmn:incoming>Flow_1g6ojs0</bpmn:incoming>
+      <bpmn:incoming>Flow_0x4j2up</bpmn:incoming>
+      <bpmn:incoming>Flow_0i0ioiq</bpmn:incoming>
+      <bpmn:outgoing>Flow_0c1thg3</bpmn:outgoing>
+    </bpmn:inclusiveGateway>
+    <bpmn:sequenceFlow id="Flow_0hy4rwq" sourceRef="SendRequestToCertibeauServiceTask" targetRef="WaitForResultEventForTheRequestToTheCertibeauServiceEvent" />
+    <bpmn:sequenceFlow id="Flow_1fv724f" sourceRef="SendRequestToAUSARUServiceTask" targetRef="WaitForResultEventForTheRequestToTheAUSARUServiceEvent" />
+    <bpmn:sequenceFlow id="Flow_0c1thg3" sourceRef="Gateway_1juq8fq" targetRef="CreateResultTask" />
+    <bpmn:endEvent id="RealEstateInfoRequestHandledEndEvent" name="Real Estate info request handled">
+      <bpmn:incoming>Flow_0gs4wh6</bpmn:incoming>
+    </bpmn:endEvent>
+    <bpmn:sequenceFlow id="Flow_0gs4wh6" sourceRef="CreateResultTask" targetRef="RealEstateInfoRequestHandledEndEvent" />
+    <bpmn:userTask id="SelectRequiredInformationSourcesTask" name="Select required information sources" camunda:assignee="demo">
+      <bpmn:extensionElements>
+        <camunda:formData>
+          <camunda:formField id="needsCadasterInfo" label="Do you need caster info?" type="boolean" />
+          <camunda:formField id="needsCertibeauInfo" label="Do you need certibeau info?" type="boolean" />
+          <camunda:formField id="needsAUSARUInfo" label="Do you need AUSA RU info?" type="boolean" />
+          <camunda:formField id="RRN" label="What&#39;s your personal ID code - RRN?" type="string" />
+          <camunda:formField id="capakey" label="What&#39;s the capakey of your real estate?" type="string" />
+          <camunda:formField id="FormField_1u7bsp3" label="Study Dossier ID" type="string" />
+        </camunda:formData>
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_0jkfl96</bpmn:incoming>
+      <bpmn:outgoing>Flow_0g7hla2</bpmn:outgoing>
+    </bpmn:userTask>
+    <bpmn:userTask id="CreateResultTask" name="Create result" camunda:assignee="demo">
+      <bpmn:incoming>Flow_0c1thg3</bpmn:incoming>
+      <bpmn:outgoing>Flow_0gs4wh6</bpmn:outgoing>
+    </bpmn:userTask>
+    <bpmn:endEvent id="FlowEndedNoInfoToRequestEndEvent" name="Flow ended no info to request">
+      <bpmn:incoming>Flow_04z7z6y</bpmn:incoming>
+    </bpmn:endEvent>
+    <bpmn:sequenceFlow id="Flow_04z7z6y" sourceRef="Gateway_0mkeicn" targetRef="FlowEndedNoInfoToRequestEndEvent" />
+    <bpmn:sequenceFlow id="Flow_1g6ojs0" sourceRef="GetTheResultDataFromCadasterAndStoreItTask" targetRef="Gateway_1juq8fq" />
+    <bpmn:sequenceFlow id="Flow_0x4j2up" sourceRef="GetTheResultDataFromCertibeauAndStoreItTask" targetRef="Gateway_1juq8fq" />
+    <bpmn:sequenceFlow id="Flow_0i0ioiq" sourceRef="GetTheResultDataFromAUSARUAndStoreItTask" targetRef="Gateway_1juq8fq" />
+    <bpmn:serviceTask id="SendRequestToCadasterServiceTask" name="Send Request to cadaster service" camunda:asyncBefore="true" camunda:exclusive="false" camunda:class="sven.camunda.projects.ibotdemo1.delegate.CadasterRequest">
+      <bpmn:extensionElements>
+        <camunda:failedJobRetryTimeCycle>R5/PT10S</camunda:failedJobRetryTimeCycle>
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_1lg4g1q</bpmn:incoming>
+      <bpmn:outgoing>Flow_1n7d36x</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:serviceTask id="GetTheResultDataFromCadasterAndStoreItTask" name="Get the result data from cadaster and store it" camunda:asyncBefore="true" camunda:exclusive="false" camunda:class="sven.camunda.projects.ibotdemo1.delegate.CadasterResult">
+      <bpmn:incoming>Flow_0tniut5</bpmn:incoming>
+      <bpmn:outgoing>Flow_1g6ojs0</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:sequenceFlow id="Flow_0tniut5" sourceRef="WaitForResultEventForTheRequestToTheCadasterServiceEvent" targetRef="GetTheResultDataFromCadasterAndStoreItTask" />
+    <bpmn:intermediateCatchEvent id="WaitForResultEventForTheRequestToTheCadasterServiceEvent" name="Wait for result event for the request to the cadaster service" camunda:asyncBefore="true" camunda:exclusive="false">
+      <bpmn:incoming>Flow_1n7d36x</bpmn:incoming>
+      <bpmn:outgoing>Flow_0tniut5</bpmn:outgoing>
+      <bpmn:timerEventDefinition id="TimerEventDefinition_1mkbi50">
+        <bpmn:timeDuration xsi:type="bpmn:tFormalExpression">PT30S</bpmn:timeDuration>
+      </bpmn:timerEventDefinition>
+    </bpmn:intermediateCatchEvent>
+    <bpmn:sequenceFlow id="Flow_1egf6dg" sourceRef="WaitForResultEventForTheRequestToTheCertibeauServiceEvent" targetRef="GetTheResultDataFromCertibeauAndStoreItTask" />
+    <bpmn:intermediateCatchEvent id="WaitForResultEventForTheRequestToTheCertibeauServiceEvent" name="Wait for result event for the request to the Certibeau service" camunda:asyncBefore="true" camunda:exclusive="false">
+      <bpmn:incoming>Flow_0hy4rwq</bpmn:incoming>
+      <bpmn:outgoing>Flow_1egf6dg</bpmn:outgoing>
+      <bpmn:timerEventDefinition id="TimerEventDefinition_1bdr2i1">
+        <bpmn:timeDuration xsi:type="bpmn:tFormalExpression">PT1M</bpmn:timeDuration>
+      </bpmn:timerEventDefinition>
+    </bpmn:intermediateCatchEvent>
+    <bpmn:sequenceFlow id="Flow_19c0dvk" sourceRef="WaitForResultEventForTheRequestToTheAUSARUServiceEvent" targetRef="GetTheResultDataFromAUSARUAndStoreItTask" />
+    <bpmn:intermediateCatchEvent id="WaitForResultEventForTheRequestToTheAUSARUServiceEvent" name="Wait for result event for the request to the AUSA RU service" camunda:asyncBefore="true" camunda:exclusive="false">
+      <bpmn:incoming>Flow_1fv724f</bpmn:incoming>
+      <bpmn:outgoing>Flow_19c0dvk</bpmn:outgoing>
+      <bpmn:timerEventDefinition id="TimerEventDefinition_0ejgo7k">
+        <bpmn:timeDuration xsi:type="bpmn:tFormalExpression">PT5S</bpmn:timeDuration>
+      </bpmn:timerEventDefinition>
+    </bpmn:intermediateCatchEvent>
+    <bpmn:serviceTask id="SendRequestToCertibeauServiceTask" name="Send request to Certibeau service" camunda:asyncBefore="true" camunda:exclusive="false" camunda:class="sven.camunda.projects.ibotdemo1.delegate.CertibeauRequest">
+      <bpmn:incoming>Flow_02rvmbs</bpmn:incoming>
+      <bpmn:outgoing>Flow_0hy4rwq</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:serviceTask id="SendRequestToAUSARUServiceTask" name="Send request to AUSA RU service" camunda:asyncBefore="true" camunda:exclusive="false" camunda:class="sven.camunda.projects.ibotdemo1.delegate.AusaRURequest">
+      <bpmn:incoming>Flow_0opb1p0</bpmn:incoming>
+      <bpmn:outgoing>Flow_1fv724f</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:serviceTask id="GetTheResultDataFromCertibeauAndStoreItTask" name="Get the result data from certibeau and store it" camunda:asyncBefore="true" camunda:exclusive="false" camunda:class="sven.camunda.projects.ibotdemo1.delegate.CertibeauResult">
+      <bpmn:incoming>Flow_1egf6dg</bpmn:incoming>
+      <bpmn:outgoing>Flow_0x4j2up</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:serviceTask id="GetTheResultDataFromAUSARUAndStoreItTask" name="Get the result data from AUSA RU and store it" camunda:asyncBefore="true" camunda:exclusive="false" camunda:class="sven.camunda.projects.ibotdemo1.delegate.AusaRUResult">
+      <bpmn:incoming>Flow_19c0dvk</bpmn:incoming>
+      <bpmn:outgoing>Flow_0i0ioiq</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:exclusiveGateway id="Gateway_0wvqv9r" default="Flow_0fhvygd">
+      <bpmn:incoming>Flow_0ho397v</bpmn:incoming>
+      <bpmn:outgoing>Flow_0jkfl96</bpmn:outgoing>
+      <bpmn:outgoing>Flow_0fhvygd</bpmn:outgoing>
+    </bpmn:exclusiveGateway>
+    <bpmn:sequenceFlow id="Flow_0jkfl96" name="Manual Demo" sourceRef="Gateway_0wvqv9r" targetRef="SelectRequiredInformationSourcesTask">
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${isManualDemo == true}</bpmn:conditionExpression>
+    </bpmn:sequenceFlow>
+    <bpmn:exclusiveGateway id="Gateway_0wchv5j">
+      <bpmn:incoming>Flow_0g7hla2</bpmn:incoming>
+      <bpmn:incoming>Flow_0fhvygd</bpmn:incoming>
+      <bpmn:outgoing>Flow_1spuo0f</bpmn:outgoing>
+    </bpmn:exclusiveGateway>
+    <bpmn:sequenceFlow id="Flow_1spuo0f" sourceRef="Gateway_0wchv5j" targetRef="Gateway_0mkeicn" />
+    <bpmn:sequenceFlow id="Flow_0fhvygd" name="Auto Demo" sourceRef="Gateway_0wvqv9r" targetRef="Gateway_0wchv5j" />
+  </bpmn:process>
+  <bpmndi:BPMNDiagram id="BPMNDiagram_1">
+    <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="Ibotdemo1Process">
+      <bpmndi:BPMNEdge id="Flow_0i0ioiq_di" bpmnElement="Flow_0i0ioiq">
+        <di:waypoint x="1190" y="520" />
+        <di:waypoint x="1290" y="520" />
+        <di:waypoint x="1290" y="225" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0x4j2up_di" bpmnElement="Flow_0x4j2up">
+        <di:waypoint x="1190" y="360" />
+        <di:waypoint x="1290" y="360" />
+        <di:waypoint x="1290" y="225" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1g6ojs0_di" bpmnElement="Flow_1g6ojs0">
+        <di:waypoint x="1190" y="200" />
+        <di:waypoint x="1265" y="200" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_04z7z6y_di" bpmnElement="Flow_04z7z6y">
+        <di:waypoint x="650" y="225" />
+        <di:waypoint x="650" y="620" />
+        <di:waypoint x="732" y="620" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0gs4wh6_di" bpmnElement="Flow_0gs4wh6">
+        <di:waypoint x="1470" y="200" />
+        <di:waypoint x="1532" y="200" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0c1thg3_di" bpmnElement="Flow_0c1thg3">
+        <di:waypoint x="1315" y="200" />
+        <di:waypoint x="1370" y="200" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1fv724f_di" bpmnElement="Flow_1fv724f">
+        <di:waypoint x="830" y="520" />
+        <di:waypoint x="952" y="520" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0hy4rwq_di" bpmnElement="Flow_0hy4rwq">
+        <di:waypoint x="830" y="360" />
+        <di:waypoint x="952" y="360" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1n7d36x_di" bpmnElement="Flow_1n7d36x">
+        <di:waypoint x="830" y="200" />
+        <di:waypoint x="952" y="200" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0opb1p0_di" bpmnElement="Flow_0opb1p0">
+        <di:waypoint x="650" y="225" />
+        <di:waypoint x="650" y="520" />
+        <di:waypoint x="730" y="520" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_02rvmbs_di" bpmnElement="Flow_02rvmbs">
+        <di:waypoint x="650" y="225" />
+        <di:waypoint x="650" y="360" />
+        <di:waypoint x="730" y="360" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1lg4g1q_di" bpmnElement="Flow_1lg4g1q">
+        <di:waypoint x="675" y="200" />
+        <di:waypoint x="730" y="200" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0g7hla2_di" bpmnElement="Flow_0g7hla2">
+        <di:waypoint x="510" y="120" />
+        <di:waypoint x="560" y="120" />
+        <di:waypoint x="560" y="175" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0ho397v_di" bpmnElement="Flow_0ho397v">
+        <di:waypoint x="228" y="200" />
+        <di:waypoint x="315" y="200" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0tniut5_di" bpmnElement="Flow_0tniut5">
+        <di:waypoint x="988" y="200" />
+        <di:waypoint x="1090" y="200" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1egf6dg_di" bpmnElement="Flow_1egf6dg">
+        <di:waypoint x="988" y="360" />
+        <di:waypoint x="1090" y="360" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_19c0dvk_di" bpmnElement="Flow_19c0dvk">
+        <di:waypoint x="988" y="520" />
+        <di:waypoint x="1090" y="520" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0jkfl96_di" bpmnElement="Flow_0jkfl96">
+        <di:waypoint x="365" y="200" />
+        <di:waypoint x="388" y="200" />
+        <di:waypoint x="388" y="120" />
+        <di:waypoint x="410" y="120" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="370" y="157" width="69" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1spuo0f_di" bpmnElement="Flow_1spuo0f">
+        <di:waypoint x="585" y="200" />
+        <di:waypoint x="625" y="200" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0fhvygd_di" bpmnElement="Flow_0fhvygd">
+        <di:waypoint x="365" y="200" />
+        <di:waypoint x="535" y="200" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="425" y="182" width="55" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNShape id="_BPMNShape_StartEvent_2" bpmnElement="RealEstateInfoRequestReceivedStartEvent">
+        <dc:Bounds x="192" y="182" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="169" y="225" width="82" height="27" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Gateway_1n2j6ym_di" bpmnElement="Gateway_0mkeicn">
+        <dc:Bounds x="625" y="175" width="50" height="50" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Gateway_0cyvppf_di" bpmnElement="Gateway_1juq8fq">
+        <dc:Bounds x="1265" y="175" width="50" height="50" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_0ojawwh_di" bpmnElement="RealEstateInfoRequestHandledEndEvent">
+        <dc:Bounds x="1532" y="182" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="1511" y="225" width="79" height="27" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_0k6c3e3_di" bpmnElement="CreateResultTask">
+        <dc:Bounds x="1370" y="160" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_0xt8091_di" bpmnElement="SendRequestToCadasterServiceTask">
+        <dc:Bounds x="730" y="160" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_14j0spp_di" bpmnElement="GetTheResultDataFromCadasterAndStoreItTask">
+        <dc:Bounds x="1090" y="160" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_1y07n7i_di" bpmnElement="WaitForResultEventForTheRequestToTheCadasterServiceEvent">
+        <dc:Bounds x="952" y="182" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="930" y="225" width="81" height="53" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_1v2f3fl_di" bpmnElement="FlowEndedNoInfoToRequestEndEvent">
+        <dc:Bounds x="732" y="602" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="714" y="645" width="73" height="27" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_0na5czp_di" bpmnElement="WaitForResultEventForTheRequestToTheCertibeauServiceEvent">
+        <dc:Bounds x="952" y="342" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="927" y="385" width="86" height="53" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_19kud1j_di" bpmnElement="WaitForResultEventForTheRequestToTheAUSARUServiceEvent">
+        <dc:Bounds x="952" y="502" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="927" y="545" width="86" height="53" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_1k00sj1_di" bpmnElement="SendRequestToCertibeauServiceTask">
+        <dc:Bounds x="730" y="320" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_1g3p6bl_di" bpmnElement="SendRequestToAUSARUServiceTask">
+        <dc:Bounds x="730" y="480" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_0uax2th_di" bpmnElement="GetTheResultDataFromCertibeauAndStoreItTask">
+        <dc:Bounds x="1090" y="320" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_0b6f8y2_di" bpmnElement="GetTheResultDataFromAUSARUAndStoreItTask">
+        <dc:Bounds x="1090" y="480" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Gateway_0wvqv9r_di" bpmnElement="Gateway_0wvqv9r" isMarkerVisible="true">
+        <dc:Bounds x="315" y="175" width="50" height="50" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Gateway_0wchv5j_di" bpmnElement="Gateway_0wchv5j" isMarkerVisible="true">
+        <dc:Bounds x="535" y="175" width="50" height="50" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_1qchewf_di" bpmnElement="SelectRequiredInformationSourcesTask">
+        <dc:Bounds x="410" y="80" width="100" height="80" />
+      </bpmndi:BPMNShape>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</bpmn:definitions>

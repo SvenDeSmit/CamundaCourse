@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:camunda="http://camunda.org/schema/1.0/bpmn" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:modeler="http://camunda.org/schema/modeler/1.0" id="Definitions_1poelvu" targetNamespace="http://bpmn.io/schema/bpmn" exporter="Camunda Modeler" exporterVersion="4.8.1" modeler:executionPlatform="Camunda Platform" modeler:executionPlatformVersion="7.15.0">
+  <bpmn:process id="TaskservicetaskjavadelegateexpressionProcess" name="task-service-task-java-delegate-expression" isExecutable="true" camunda:versionTag="v1.0">
+    <bpmn:startEvent id="RequestReceivedStartEvent" name="Request received">
+      <bpmn:outgoing>Flow_0svnbid</bpmn:outgoing>
+    </bpmn:startEvent>
+    <bpmn:sequenceFlow id="Flow_0svnbid" sourceRef="RequestReceivedStartEvent" targetRef="OrderServiceTask" />
+    <bpmn:sequenceFlow id="Flow_0yii0xt" sourceRef="OrderServiceTask" targetRef="WaitTask" />
+    <bpmn:endEvent id="RequestProcessedEndEvent" name="Request processed">
+      <bpmn:incoming>Flow_1rtnlwo</bpmn:incoming>
+    </bpmn:endEvent>
+    <bpmn:sequenceFlow id="Flow_1rtnlwo" sourceRef="WaitTask" targetRef="RequestProcessedEndEvent" />
+    <bpmn:userTask id="WaitTask" name="Wait" camunda:assignee="demo">
+      <bpmn:incoming>Flow_0yii0xt</bpmn:incoming>
+      <bpmn:outgoing>Flow_1rtnlwo</bpmn:outgoing>
+    </bpmn:userTask>
+    <bpmn:serviceTask id="OrderServiceTask" name="Order Service" camunda:delegateExpression="${orderService}">
+      <bpmn:incoming>Flow_0svnbid</bpmn:incoming>
+      <bpmn:outgoing>Flow_0yii0xt</bpmn:outgoing>
+    </bpmn:serviceTask>
+  </bpmn:process>
+  <bpmndi:BPMNDiagram id="BPMNDiagram_1">
+    <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="TaskservicetaskjavadelegateexpressionProcess">
+      <bpmndi:BPMNEdge id="Flow_0svnbid_di" bpmnElement="Flow_0svnbid">
+        <di:waypoint x="215" y="117" />
+        <di:waypoint x="340" y="117" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0yii0xt_di" bpmnElement="Flow_0yii0xt">
+        <di:waypoint x="440" y="117" />
+        <di:waypoint x="570" y="117" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1rtnlwo_di" bpmnElement="Flow_1rtnlwo">
+        <di:waypoint x="670" y="117" />
+        <di:waypoint x="772" y="117" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNShape id="_BPMNShape_StartEvent_2" bpmnElement="RequestReceivedStartEvent">
+        <dc:Bounds x="179" y="99" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="154" y="142" width="86" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_0ga3uea_di" bpmnElement="RequestProcessedEndEvent">
+        <dc:Bounds x="772" y="99" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="765" y="142" width="51" height="27" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_0ht4767_di" bpmnElement="WaitTask">
+        <dc:Bounds x="570" y="77" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_06cn3m4_di" bpmnElement="OrderServiceTask">
+        <dc:Bounds x="340" y="77" width="100" height="80" />
+      </bpmndi:BPMNShape>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</bpmn:definitions>

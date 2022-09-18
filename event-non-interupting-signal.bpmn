@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:camunda="http://camunda.org/schema/1.0/bpmn" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:modeler="http://camunda.org/schema/modeler/1.0" id="Definitions_139480e" targetNamespace="http://bpmn.io/schema/bpmn" exporter="Camunda Modeler" exporterVersion="4.8.1" modeler:executionPlatform="Camunda Platform" modeler:executionPlatformVersion="7.15.0">
+  <bpmn:process id="EventNonInterruptingSignalProcess" name="Event Non Interrupting Signal" isExecutable="true" camunda:versionTag="v1.0">
+    <bpmn:startEvent id="GoShoppingStartEvent" name="Go Shopping">
+      <bpmn:outgoing>Flow_1xwsaac</bpmn:outgoing>
+    </bpmn:startEvent>
+    <bpmn:sequenceFlow id="Flow_1xwsaac" sourceRef="GoShoppingStartEvent" targetRef="GoToShop1Task" />
+    <bpmn:userTask id="GoToShop1Task" name="Go to Shop 1">
+      <bpmn:incoming>Flow_1xwsaac</bpmn:incoming>
+      <bpmn:outgoing>Flow_1wl6uwh</bpmn:outgoing>
+    </bpmn:userTask>
+    <bpmn:sequenceFlow id="Flow_1wl6uwh" sourceRef="GoToShop1Task" targetRef="GoToShopBTask" />
+    <bpmn:userTask id="GoToShopBTask" name="Go to shop B">
+      <bpmn:incoming>Flow_1wl6uwh</bpmn:incoming>
+      <bpmn:outgoing>Flow_1y4e0nx</bpmn:outgoing>
+    </bpmn:userTask>
+    <bpmn:endEvent id="EndShoppingEndEvent" name="End Shopping">
+      <bpmn:incoming>Flow_1y4e0nx</bpmn:incoming>
+    </bpmn:endEvent>
+    <bpmn:sequenceFlow id="Flow_1y4e0nx" sourceRef="GoToShopBTask" targetRef="EndShoppingEndEvent" />
+    <bpmn:endEvent id="GoneHomeEventEndEvent" name="Gone Home Event">
+      <bpmn:incoming>Flow_004d6gl</bpmn:incoming>
+    </bpmn:endEvent>
+    <bpmn:sequenceFlow id="Flow_004d6gl" sourceRef="GoHomeTask" targetRef="GoneHomeEventEndEvent" />
+    <bpmn:userTask id="GoHomeTask" name="Go Home!">
+      <bpmn:incoming>Flow_1iud4gd</bpmn:incoming>
+      <bpmn:outgoing>Flow_004d6gl</bpmn:outgoing>
+    </bpmn:userTask>
+    <bpmn:sequenceFlow id="Flow_1iud4gd" sourceRef="GoHomeSignalBoundaryEvent" targetRef="GoHomeTask" />
+    <bpmn:boundaryEvent id="GoHomeSignalBoundaryEvent" name="Go Home Signal" cancelActivity="false" attachedToRef="GoToShop1Task">
+      <bpmn:outgoing>Flow_1iud4gd</bpmn:outgoing>
+      <bpmn:signalEventDefinition id="SignalEventDefinition_03j0o6k" signalRef="Signal_0vi2zjz" />
+    </bpmn:boundaryEvent>
+    <bpmn:group id="Group_0596b42" categoryValueRef="CategoryValue_09xg2qn" />
+  </bpmn:process>
+  <bpmn:category id="Category_0b8xvu2">
+    <bpmn:categoryValue id="CategoryValue_09xg2qn" />
+  </bpmn:category>
+  <bpmn:signal id="Signal_0vi2zjz" name="GoHomeAlert" />
+  <bpmndi:BPMNDiagram id="BPMNDiagram_1">
+    <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="EventNonInterruptingSignalProcess">
+      <bpmndi:BPMNEdge id="Flow_1iud4gd_di" bpmnElement="Flow_1iud4gd">
+        <di:waypoint x="570" y="175" />
+        <di:waypoint x="570" y="240" />
+        <di:waypoint x="640" y="240" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_004d6gl_di" bpmnElement="Flow_004d6gl">
+        <di:waypoint x="740" y="240" />
+        <di:waypoint x="792" y="240" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1y4e0nx_di" bpmnElement="Flow_1y4e0nx">
+        <di:waypoint x="780" y="117" />
+        <di:waypoint x="842" y="117" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1wl6uwh_di" bpmnElement="Flow_1wl6uwh">
+        <di:waypoint x="620" y="117" />
+        <di:waypoint x="680" y="117" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1xwsaac_di" bpmnElement="Flow_1xwsaac">
+        <di:waypoint x="465" y="117" />
+        <di:waypoint x="520" y="117" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNShape id="_BPMNShape_StartEvent_2" bpmnElement="GoShoppingStartEvent">
+        <dc:Bounds x="429" y="99" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="415" y="142" width="65" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_1m6tirn_di" bpmnElement="GoToShop1Task">
+        <dc:Bounds x="520" y="77" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_1q6fpvj_di" bpmnElement="GoToShopBTask">
+        <dc:Bounds x="680" y="77" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_0ky9rkr_di" bpmnElement="EndShoppingEndEvent">
+        <dc:Bounds x="842" y="99" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="825" y="142" width="70" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_1oxqomo_di" bpmnElement="GoneHomeEventEndEvent">
+        <dc:Bounds x="792" y="222" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="780" y="265" width="60" height="27" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_004jg5r_di" bpmnElement="GoHomeTask">
+        <dc:Bounds x="640" y="200" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_046jiog_di" bpmnElement="GoHomeSignalBoundaryEvent">
+        <dc:Bounds x="552" y="139" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="531" y="182" width="82" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Group_0596b42_di" bpmnElement="Group_0596b42">
+        <dc:Bounds x="160" y="500" width="300" height="300" />
+      </bpmndi:BPMNShape>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</bpmn:definitions>

@@ -1,0 +1,126 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:camunda="http://camunda.org/schema/1.0/bpmn" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:modeler="http://camunda.org/schema/modeler/1.0" id="Definitions_1igj2qy" targetNamespace="http://bpmn.io/schema/bpmn" exporter="Camunda Modeler" exporterVersion="4.8.1" modeler:executionPlatform="Camunda Platform" modeler:executionPlatformVersion="7.15.0">
+  <bpmn:process id="GatewayXORJoinProcess" name="Gateway XOR Join" isExecutable="true" camunda:versionTag="v1">
+    <bpmn:startEvent id="ProcStartedStartEvent" name="proc started">
+      <bpmn:outgoing>Flow_0pnbf68</bpmn:outgoing>
+    </bpmn:startEvent>
+    <bpmn:sequenceFlow id="Flow_0pnbf68" sourceRef="ProcStartedStartEvent" targetRef="EnterTypeTask" />
+    <bpmn:exclusiveGateway id="TypeGateway" name="Type?&#10;&#10;">
+      <bpmn:incoming>Flow_1j6g92h</bpmn:incoming>
+      <bpmn:outgoing>ASequenceFlow</bpmn:outgoing>
+      <bpmn:outgoing>BSequenceFlow</bpmn:outgoing>
+    </bpmn:exclusiveGateway>
+    <bpmn:sequenceFlow id="Flow_1j6g92h" sourceRef="EnterTypeTask" targetRef="TypeGateway" />
+    <bpmn:sequenceFlow id="ASequenceFlow" name="A" sourceRef="TypeGateway" targetRef="OptionATask">
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${type == "A"}</bpmn:conditionExpression>
+    </bpmn:sequenceFlow>
+    <bpmn:sequenceFlow id="BSequenceFlow" name="B" sourceRef="TypeGateway" targetRef="OptionBTask">
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${type == "B"}</bpmn:conditionExpression>
+    </bpmn:sequenceFlow>
+    <bpmn:exclusiveGateway id="Gateway_1qyygsc">
+      <bpmn:incoming>Flow_0e0pz81</bpmn:incoming>
+      <bpmn:incoming>Flow_19el276</bpmn:incoming>
+      <bpmn:outgoing>Flow_1s2q3b1</bpmn:outgoing>
+    </bpmn:exclusiveGateway>
+    <bpmn:sequenceFlow id="Flow_0e0pz81" sourceRef="OptionATask" targetRef="Gateway_1qyygsc" />
+    <bpmn:sequenceFlow id="Flow_19el276" sourceRef="OptionBTask" targetRef="Gateway_1qyygsc" />
+    <bpmn:sequenceFlow id="Flow_1s2q3b1" sourceRef="Gateway_1qyygsc" targetRef="ContinueTask" />
+    <bpmn:endEvent id="ProcEndedEndEvent" name="proc ended">
+      <bpmn:incoming>Flow_1qste6c</bpmn:incoming>
+    </bpmn:endEvent>
+    <bpmn:sequenceFlow id="Flow_1qste6c" sourceRef="ContinueTask" targetRef="ProcEndedEndEvent" />
+    <bpmn:userTask id="EnterTypeTask" name="Enter type">
+      <bpmn:incoming>Flow_0pnbf68</bpmn:incoming>
+      <bpmn:outgoing>Flow_1j6g92h</bpmn:outgoing>
+    </bpmn:userTask>
+    <bpmn:userTask id="OptionATask" name="Option A">
+      <bpmn:incoming>ASequenceFlow</bpmn:incoming>
+      <bpmn:outgoing>Flow_0e0pz81</bpmn:outgoing>
+    </bpmn:userTask>
+    <bpmn:userTask id="OptionBTask" name="Option B">
+      <bpmn:incoming>BSequenceFlow</bpmn:incoming>
+      <bpmn:outgoing>Flow_19el276</bpmn:outgoing>
+    </bpmn:userTask>
+    <bpmn:userTask id="ContinueTask" name="Continue">
+      <bpmn:incoming>Flow_1s2q3b1</bpmn:incoming>
+      <bpmn:outgoing>Flow_1qste6c</bpmn:outgoing>
+    </bpmn:userTask>
+  </bpmn:process>
+  <bpmndi:BPMNDiagram id="BPMNDiagram_1">
+    <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="GatewayXORJoinProcess">
+      <bpmndi:BPMNEdge id="Flow_0pnbf68_di" bpmnElement="Flow_0pnbf68">
+        <di:waypoint x="215" y="177" />
+        <di:waypoint x="270" y="177" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1j6g92h_di" bpmnElement="Flow_1j6g92h">
+        <di:waypoint x="370" y="177" />
+        <di:waypoint x="425" y="177" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1lex90f_di" bpmnElement="ASequenceFlow">
+        <di:waypoint x="475" y="177" />
+        <di:waypoint x="530" y="177" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="499" y="159" width="7" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0f4wk12_di" bpmnElement="BSequenceFlow">
+        <di:waypoint x="450" y="202" />
+        <di:waypoint x="450" y="290" />
+        <di:waypoint x="530" y="290" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="461" y="243" width="8" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0e0pz81_di" bpmnElement="Flow_0e0pz81">
+        <di:waypoint x="630" y="177" />
+        <di:waypoint x="685" y="177" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_19el276_di" bpmnElement="Flow_19el276">
+        <di:waypoint x="630" y="290" />
+        <di:waypoint x="710" y="290" />
+        <di:waypoint x="710" y="202" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1s2q3b1_di" bpmnElement="Flow_1s2q3b1">
+        <di:waypoint x="735" y="177" />
+        <di:waypoint x="790" y="177" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1qste6c_di" bpmnElement="Flow_1qste6c">
+        <di:waypoint x="890" y="177" />
+        <di:waypoint x="952" y="177" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNShape id="_BPMNShape_StartEvent_2" bpmnElement="ProcStartedStartEvent">
+        <dc:Bounds x="179" y="159" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="168" y="202" width="59" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Gateway_0n1cu1b_di" bpmnElement="TypeGateway" isMarkerVisible="true">
+        <dc:Bounds x="425" y="152" width="50" height="50" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="436" y="122" width="29" height="40" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Gateway_1qyygsc_di" bpmnElement="Gateway_1qyygsc" isMarkerVisible="true">
+        <dc:Bounds x="685" y="152" width="50" height="50" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_05g7v73_di" bpmnElement="ProcEndedEndEvent">
+        <dc:Bounds x="952" y="159" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="942" y="202" width="56" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_06dovbg_di" bpmnElement="EnterTypeTask">
+        <dc:Bounds x="270" y="137" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_09u1zx2_di" bpmnElement="OptionATask">
+        <dc:Bounds x="530" y="137" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_0mlikju_di" bpmnElement="OptionBTask">
+        <dc:Bounds x="530" y="250" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_0tgvjeb_di" bpmnElement="ContinueTask">
+        <dc:Bounds x="790" y="137" width="100" height="80" />
+      </bpmndi:BPMNShape>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</bpmn:definitions>

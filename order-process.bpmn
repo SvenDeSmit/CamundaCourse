@@ -1,0 +1,115 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:camunda="http://camunda.org/schema/1.0/bpmn" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:modeler="http://camunda.org/schema/modeler/1.0" id="Definitions_1tu7htb" targetNamespace="http://bpmn.io/schema/bpmn" exporter="Camunda Modeler" exporterVersion="4.8.1" modeler:executionPlatform="Camunda Platform" modeler:executionPlatformVersion="7.15.0">
+  <bpmn:collaboration id="Collaboration_0uei7l6">
+    <bpmn:participant id="OrderManagementParticipant" name="Order Management" processRef="order-send-receive" />
+  </bpmn:collaboration>
+  <bpmn:process id="order-send-receive" name="order-send-receive" isExecutable="true" camunda:versionTag="v1.0">
+    <bpmn:startEvent id="OrderProcessStartedStartEvent" name="Order process started">
+      <bpmn:outgoing>Flow_08x5sht</bpmn:outgoing>
+    </bpmn:startEvent>
+    <bpmn:userTask id="ValidateOrderTask" name="Validate order" camunda:assignee="demo">
+      <bpmn:incoming>Flow_08x5sht</bpmn:incoming>
+      <bpmn:outgoing>Flow_1w78mzw</bpmn:outgoing>
+    </bpmn:userTask>
+    <bpmn:sendTask id="SendOrderToShipmentVendorTask" name="Send order to shipment vendor" camunda:delegateExpression="${sendOrderDelegate}">
+      <bpmn:incoming>Flow_1w78mzw</bpmn:incoming>
+      <bpmn:outgoing>Flow_0v3cjo6</bpmn:outgoing>
+    </bpmn:sendTask>
+    <bpmn:serviceTask id="UpdateTheInventoryTask" name="Update the inventory" camunda:expression="${execution.setVariable(&#34;isInventoryUpdated&#34;,&#34;yes&#34;)}">
+      <bpmn:incoming>Flow_0v3cjo6</bpmn:incoming>
+      <bpmn:outgoing>Flow_0iraozs</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:intermediateCatchEvent id="WaitFor3DaysEvent" name="Wait for 3 days">
+      <bpmn:incoming>Flow_0iraozs</bpmn:incoming>
+      <bpmn:outgoing>Flow_0xd1pk7</bpmn:outgoing>
+      <bpmn:timerEventDefinition id="TimerEventDefinition_142f790">
+        <bpmn:timeDuration xsi:type="bpmn:tFormalExpression">PT20S</bpmn:timeDuration>
+      </bpmn:timerEventDefinition>
+    </bpmn:intermediateCatchEvent>
+    <bpmn:userTask id="CollectFeedbackTask" name="Collect feedback" camunda:assignee="demo">
+      <bpmn:incoming>Flow_0xd1pk7</bpmn:incoming>
+      <bpmn:outgoing>Flow_1p1ce08</bpmn:outgoing>
+    </bpmn:userTask>
+    <bpmn:endEvent id="OrderProcessEndedEndEvent" name="Order process ended">
+      <bpmn:incoming>Flow_1p1ce08</bpmn:incoming>
+    </bpmn:endEvent>
+    <bpmn:sequenceFlow id="Flow_08x5sht" sourceRef="OrderProcessStartedStartEvent" targetRef="ValidateOrderTask" />
+    <bpmn:sequenceFlow id="Flow_1w78mzw" sourceRef="ValidateOrderTask" targetRef="SendOrderToShipmentVendorTask" />
+    <bpmn:sequenceFlow id="Flow_0v3cjo6" sourceRef="SendOrderToShipmentVendorTask" targetRef="UpdateTheInventoryTask" />
+    <bpmn:sequenceFlow id="Flow_0iraozs" sourceRef="UpdateTheInventoryTask" targetRef="WaitFor3DaysEvent" />
+    <bpmn:sequenceFlow id="Flow_0xd1pk7" sourceRef="WaitFor3DaysEvent" targetRef="CollectFeedbackTask" />
+    <bpmn:sequenceFlow id="Flow_1p1ce08" sourceRef="CollectFeedbackTask" targetRef="OrderProcessEndedEndEvent" />
+    <bpmn:textAnnotation id="TextAnnotation_0cir2dy">
+      <bpmn:text>add is isValidated</bpmn:text>
+    </bpmn:textAnnotation>
+    <bpmn:association id="Association_1qtemhp" sourceRef="ValidateOrderTask" targetRef="TextAnnotation_0cir2dy" />
+  </bpmn:process>
+  <bpmndi:BPMNDiagram id="BPMNDiagram_1">
+    <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="Collaboration_0uei7l6">
+      <bpmndi:BPMNShape id="Participant_0x8l1en_di" bpmnElement="OrderManagementParticipant" isHorizontal="true">
+        <dc:Bounds x="129" y="80" width="981" height="312" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="TextAnnotation_0cir2dy_di" bpmnElement="TextAnnotation_0cir2dy">
+        <dc:Bounds x="370" y="140" width="100" height="40" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="Flow_08x5sht_di" bpmnElement="Flow_08x5sht">
+        <di:waypoint x="215" y="267" />
+        <di:waypoint x="270" y="267" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1w78mzw_di" bpmnElement="Flow_1w78mzw">
+        <di:waypoint x="370" y="267" />
+        <di:waypoint x="430" y="267" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0v3cjo6_di" bpmnElement="Flow_0v3cjo6">
+        <di:waypoint x="530" y="267" />
+        <di:waypoint x="590" y="267" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0iraozs_di" bpmnElement="Flow_0iraozs">
+        <di:waypoint x="690" y="267" />
+        <di:waypoint x="752" y="267" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0xd1pk7_di" bpmnElement="Flow_0xd1pk7">
+        <di:waypoint x="788" y="267" />
+        <di:waypoint x="850" y="267" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1p1ce08_di" bpmnElement="Flow_1p1ce08">
+        <di:waypoint x="950" y="267" />
+        <di:waypoint x="1012" y="267" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNShape id="_BPMNShape_StartEvent_2" bpmnElement="OrderProcessStartedStartEvent">
+        <dc:Bounds x="179" y="249" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="162" y="292" width="71" height="27" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_1nnkv3c_di" bpmnElement="ValidateOrderTask">
+        <dc:Bounds x="270" y="227" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_06gja5b_di" bpmnElement="SendOrderToShipmentVendorTask">
+        <dc:Bounds x="430" y="227" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_0fdg5xc_di" bpmnElement="UpdateTheInventoryTask">
+        <dc:Bounds x="590" y="227" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_0dhm9cr_di" bpmnElement="WaitFor3DaysEvent">
+        <dc:Bounds x="752" y="249" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="734" y="292" width="73" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_1sbxcha_di" bpmnElement="CollectFeedbackTask">
+        <dc:Bounds x="850" y="227" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_19gmpak_di" bpmnElement="OrderProcessEndedEndEvent">
+        <dc:Bounds x="1012" y="249" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="995" y="292" width="71" height="27" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="Association_1qtemhp_di" bpmnElement="Association_1qtemhp">
+        <di:waypoint x="356" y="227" />
+        <di:waypoint x="398" y="180" />
+      </bpmndi:BPMNEdge>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</bpmn:definitions>

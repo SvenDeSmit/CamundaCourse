@@ -1,0 +1,157 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:camunda="http://camunda.org/schema/1.0/bpmn" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:modeler="http://camunda.org/schema/modeler/1.0" id="Definitions_0lwojmx" targetNamespace="http://bpmn.io/schema/bpmn" exporter="Camunda Modeler" exporterVersion="4.8.1" modeler:executionPlatform="Camunda Platform" modeler:executionPlatformVersion="7.15.0">
+  <bpmn:process id="GatewayEventProcess" name="Gateway Event" isExecutable="true" camunda:versionTag="v1">
+    <bpmn:startEvent id="ProcStartedStartEvent" name="proc started">
+      <bpmn:outgoing>Flow_1jg4k12</bpmn:outgoing>
+    </bpmn:startEvent>
+    <bpmn:sequenceFlow id="Flow_1jg4k12" sourceRef="ProcStartedStartEvent" targetRef="OrderFoodOnlineTask" />
+    <bpmn:sequenceFlow id="Flow_0q4mha8" sourceRef="OrderFoodOnlineTask" targetRef="EventGatewayGateway" />
+    <bpmn:eventBasedGateway id="EventGatewayGateway" name="Event Gateway">
+      <bpmn:incoming>Flow_0q4mha8</bpmn:incoming>
+      <bpmn:outgoing>Flow_168vnfc</bpmn:outgoing>
+      <bpmn:outgoing>Flow_0px24r8</bpmn:outgoing>
+    </bpmn:eventBasedGateway>
+    <bpmn:intermediateCatchEvent id="N20SecTimerEvent" name="20 sec timer">
+      <bpmn:incoming>Flow_168vnfc</bpmn:incoming>
+      <bpmn:outgoing>Flow_0obukrr</bpmn:outgoing>
+      <bpmn:timerEventDefinition id="TimerEventDefinition_1i59qsi">
+        <bpmn:timeDuration xsi:type="bpmn:tFormalExpression">PT20S</bpmn:timeDuration>
+      </bpmn:timerEventDefinition>
+    </bpmn:intermediateCatchEvent>
+    <bpmn:sequenceFlow id="Flow_168vnfc" sourceRef="EventGatewayGateway" targetRef="N20SecTimerEvent" />
+    <bpmn:sequenceFlow id="Flow_0obukrr" sourceRef="N20SecTimerEvent" targetRef="Task1Task" />
+    <bpmn:intermediateCatchEvent id="DecisionEventEvent" name="decision event">
+      <bpmn:incoming>Flow_0px24r8</bpmn:incoming>
+      <bpmn:outgoing>Flow_0zixfbp</bpmn:outgoing>
+      <bpmn:conditionalEventDefinition id="ConditionalEventDefinition_0qgho0c">
+        <bpmn:condition xsi:type="bpmn:tFormalExpression">${type == "home delivery"}</bpmn:condition>
+      </bpmn:conditionalEventDefinition>
+    </bpmn:intermediateCatchEvent>
+    <bpmn:sequenceFlow id="Flow_0px24r8" sourceRef="EventGatewayGateway" targetRef="DecisionEventEvent" />
+    <bpmn:sequenceFlow id="Flow_0zixfbp" sourceRef="DecisionEventEvent" targetRef="Task2Task" />
+    <bpmn:sequenceFlow id="Flow_1ypwh3q" sourceRef="Task1Task" targetRef="Gateway_1b8l0r5" />
+    <bpmn:sequenceFlow id="Flow_0dbz66u" sourceRef="Task2Task" targetRef="Gateway_1b8l0r5" />
+    <bpmn:exclusiveGateway id="Gateway_1b8l0r5">
+      <bpmn:incoming>Flow_1ypwh3q</bpmn:incoming>
+      <bpmn:incoming>Flow_0dbz66u</bpmn:incoming>
+      <bpmn:outgoing>Flow_0g0j8ub</bpmn:outgoing>
+    </bpmn:exclusiveGateway>
+    <bpmn:sequenceFlow id="Flow_0g0j8ub" sourceRef="Gateway_1b8l0r5" targetRef="EndTaskTask" />
+    <bpmn:endEvent id="ProcEndedEndEvent" name="proc ended">
+      <bpmn:incoming>Flow_0kboi9k</bpmn:incoming>
+    </bpmn:endEvent>
+    <bpmn:sequenceFlow id="Flow_0kboi9k" sourceRef="EndTaskTask" targetRef="ProcEndedEndEvent" />
+    <bpmn:scriptTask id="OrderFoodOnlineTask" name="Order food online" scriptFormat="groovy">
+      <bpmn:incoming>Flow_1jg4k12</bpmn:incoming>
+      <bpmn:outgoing>Flow_0q4mha8</bpmn:outgoing>
+      <bpmn:script>def orderName = "Pizza"
+def deliveryType = "home delivery"
+execution.setVariable("order",orderName)
+execution.setVariable("type",deliveryType)</bpmn:script>
+    </bpmn:scriptTask>
+    <bpmn:userTask id="Task2Task" name="Task 2" camunda:assignee="demo">
+      <bpmn:incoming>Flow_0zixfbp</bpmn:incoming>
+      <bpmn:outgoing>Flow_0dbz66u</bpmn:outgoing>
+    </bpmn:userTask>
+    <bpmn:userTask id="Task1Task" name="Task 1" camunda:assignee="demo">
+      <bpmn:incoming>Flow_0obukrr</bpmn:incoming>
+      <bpmn:outgoing>Flow_1ypwh3q</bpmn:outgoing>
+    </bpmn:userTask>
+    <bpmn:userTask id="EndTaskTask" name="End task" camunda:assignee="demo">
+      <bpmn:incoming>Flow_0g0j8ub</bpmn:incoming>
+      <bpmn:outgoing>Flow_0kboi9k</bpmn:outgoing>
+    </bpmn:userTask>
+  </bpmn:process>
+  <bpmndi:BPMNDiagram id="BPMNDiagram_1">
+    <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="GatewayEventProcess">
+      <bpmndi:BPMNEdge id="Flow_1jg4k12_di" bpmnElement="Flow_1jg4k12">
+        <di:waypoint x="215" y="177" />
+        <di:waypoint x="270" y="177" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0q4mha8_di" bpmnElement="Flow_0q4mha8">
+        <di:waypoint x="370" y="177" />
+        <di:waypoint x="425" y="177" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_168vnfc_di" bpmnElement="Flow_168vnfc">
+        <di:waypoint x="450" y="152" />
+        <di:waypoint x="450" y="110" />
+        <di:waypoint x="532" y="110" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0obukrr_di" bpmnElement="Flow_0obukrr">
+        <di:waypoint x="568" y="110" />
+        <di:waypoint x="630" y="110" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0px24r8_di" bpmnElement="Flow_0px24r8">
+        <di:waypoint x="450" y="202" />
+        <di:waypoint x="450" y="230" />
+        <di:waypoint x="532" y="230" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0zixfbp_di" bpmnElement="Flow_0zixfbp">
+        <di:waypoint x="568" y="230" />
+        <di:waypoint x="630" y="230" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1ypwh3q_di" bpmnElement="Flow_1ypwh3q">
+        <di:waypoint x="730" y="110" />
+        <di:waypoint x="795" y="110" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0dbz66u_di" bpmnElement="Flow_0dbz66u">
+        <di:waypoint x="730" y="230" />
+        <di:waypoint x="820" y="230" />
+        <di:waypoint x="820" y="135" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0g0j8ub_di" bpmnElement="Flow_0g0j8ub">
+        <di:waypoint x="845" y="110" />
+        <di:waypoint x="910" y="110" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0kboi9k_di" bpmnElement="Flow_0kboi9k">
+        <di:waypoint x="1010" y="110" />
+        <di:waypoint x="1082" y="110" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNShape id="_BPMNShape_StartEvent_2" bpmnElement="ProcStartedStartEvent">
+        <dc:Bounds x="179" y="159" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="168" y="202" width="59" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Gateway_0zr07zh_di" bpmnElement="EventGatewayGateway">
+        <dc:Bounds x="425" y="152" width="50" height="50" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="494" y="167" width="76" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_1cqn2xu_di" bpmnElement="N20SecTimerEvent">
+        <dc:Bounds x="532" y="92" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="520" y="135" width="62" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_1md9iac_di" bpmnElement="DecisionEventEvent">
+        <dc:Bounds x="532" y="212" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="514" y="255" width="72" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Gateway_18c6sjg_di" bpmnElement="Gateway_1b8l0r5" isMarkerVisible="true">
+        <dc:Bounds x="795" y="85" width="50" height="50" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_1tndptx_di" bpmnElement="ProcEndedEndEvent">
+        <dc:Bounds x="1082" y="92" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="1072" y="135" width="56" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_18nec82_di" bpmnElement="OrderFoodOnlineTask">
+        <dc:Bounds x="270" y="137" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_1lv0bdt_di" bpmnElement="Task2Task">
+        <dc:Bounds x="630" y="190" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_1ka35dt_di" bpmnElement="Task1Task">
+        <dc:Bounds x="630" y="70" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_1wmseui_di" bpmnElement="EndTaskTask">
+        <dc:Bounds x="910" y="70" width="100" height="80" />
+      </bpmndi:BPMNShape>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</bpmn:definitions>

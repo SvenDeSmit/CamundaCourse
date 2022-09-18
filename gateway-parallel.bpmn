@@ -1,0 +1,119 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:camunda="http://camunda.org/schema/1.0/bpmn" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:modeler="http://camunda.org/schema/modeler/1.0" id="Definitions_0zyymef" targetNamespace="http://bpmn.io/schema/bpmn" exporter="Camunda Modeler" exporterVersion="4.8.1" modeler:executionPlatform="Camunda Platform" modeler:executionPlatformVersion="7.15.0">
+  <bpmn:process id="GatewayParallelProcess" name="Gateway parallel" isExecutable="true" camunda:versionTag="v1">
+    <bpmn:startEvent id="ProcStartedStartEvent" name="proc started">
+      <bpmn:outgoing>Flow_0uwnfgs</bpmn:outgoing>
+    </bpmn:startEvent>
+    <bpmn:sequenceFlow id="Flow_0uwnfgs" sourceRef="ProcStartedStartEvent" targetRef="InputTask" />
+    <bpmn:sequenceFlow id="Flow_0507od5" sourceRef="InputTask" targetRef="Gateway_1yh2tf0" />
+    <bpmn:parallelGateway id="Gateway_1yh2tf0">
+      <bpmn:incoming>Flow_0507od5</bpmn:incoming>
+      <bpmn:outgoing>ASequenceFlow</bpmn:outgoing>
+      <bpmn:outgoing>ASequenceFlow1</bpmn:outgoing>
+    </bpmn:parallelGateway>
+    <bpmn:sequenceFlow id="ASequenceFlow" name="A" sourceRef="Gateway_1yh2tf0" targetRef="TaskATask" />
+    <bpmn:sequenceFlow id="ASequenceFlow1" name="A" sourceRef="Gateway_1yh2tf0" targetRef="TaskBTask" />
+    <bpmn:sequenceFlow id="Flow_0iqplbj" sourceRef="TaskATask" targetRef="Gateway_0609ksb" />
+    <bpmn:parallelGateway id="Gateway_0609ksb">
+      <bpmn:incoming>Flow_0iqplbj</bpmn:incoming>
+      <bpmn:incoming>Flow_02dyf2w</bpmn:incoming>
+      <bpmn:outgoing>Flow_1k0vf2i</bpmn:outgoing>
+    </bpmn:parallelGateway>
+    <bpmn:sequenceFlow id="Flow_02dyf2w" sourceRef="TaskBTask" targetRef="Gateway_0609ksb" />
+    <bpmn:sequenceFlow id="Flow_1k0vf2i" sourceRef="Gateway_0609ksb" targetRef="EndTaskTask" />
+    <bpmn:endEvent id="ProcEndedEndEvent" name="proc ended">
+      <bpmn:incoming>Flow_0niv4ih</bpmn:incoming>
+    </bpmn:endEvent>
+    <bpmn:sequenceFlow id="Flow_0niv4ih" sourceRef="EndTaskTask" targetRef="ProcEndedEndEvent" />
+    <bpmn:userTask id="InputTask" name="Input">
+      <bpmn:incoming>Flow_0uwnfgs</bpmn:incoming>
+      <bpmn:outgoing>Flow_0507od5</bpmn:outgoing>
+    </bpmn:userTask>
+    <bpmn:userTask id="TaskATask" name="Task A">
+      <bpmn:incoming>ASequenceFlow</bpmn:incoming>
+      <bpmn:outgoing>Flow_0iqplbj</bpmn:outgoing>
+    </bpmn:userTask>
+    <bpmn:userTask id="TaskBTask" name="Task B">
+      <bpmn:incoming>ASequenceFlow1</bpmn:incoming>
+      <bpmn:outgoing>Flow_02dyf2w</bpmn:outgoing>
+    </bpmn:userTask>
+    <bpmn:userTask id="EndTaskTask" name="End task">
+      <bpmn:incoming>Flow_1k0vf2i</bpmn:incoming>
+      <bpmn:outgoing>Flow_0niv4ih</bpmn:outgoing>
+    </bpmn:userTask>
+  </bpmn:process>
+  <bpmndi:BPMNDiagram id="BPMNDiagram_1">
+    <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="GatewayParallelProcess">
+      <bpmndi:BPMNEdge id="Flow_0uwnfgs_di" bpmnElement="Flow_0uwnfgs">
+        <di:waypoint x="215" y="117" />
+        <di:waypoint x="270" y="117" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0507od5_di" bpmnElement="Flow_0507od5">
+        <di:waypoint x="370" y="117" />
+        <di:waypoint x="425" y="117" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1n2aztw_di" bpmnElement="ASequenceFlow">
+        <di:waypoint x="475" y="117" />
+        <di:waypoint x="530" y="117" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="499" y="99" width="7" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1mi4hfm_di" bpmnElement="ASequenceFlow1">
+        <di:waypoint x="450" y="142" />
+        <di:waypoint x="450" y="230" />
+        <di:waypoint x="530" y="230" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="462" y="183" width="7" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0iqplbj_di" bpmnElement="Flow_0iqplbj">
+        <di:waypoint x="630" y="117" />
+        <di:waypoint x="685" y="117" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_02dyf2w_di" bpmnElement="Flow_02dyf2w">
+        <di:waypoint x="630" y="230" />
+        <di:waypoint x="710" y="230" />
+        <di:waypoint x="710" y="142" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1k0vf2i_di" bpmnElement="Flow_1k0vf2i">
+        <di:waypoint x="735" y="117" />
+        <di:waypoint x="790" y="117" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0niv4ih_di" bpmnElement="Flow_0niv4ih">
+        <di:waypoint x="890" y="117" />
+        <di:waypoint x="952" y="117" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNShape id="_BPMNShape_StartEvent_2" bpmnElement="ProcStartedStartEvent">
+        <dc:Bounds x="179" y="99" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="168" y="142" width="59" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Gateway_0je5xxq_di" bpmnElement="Gateway_1yh2tf0">
+        <dc:Bounds x="425" y="92" width="50" height="50" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Gateway_0xhjv6v_di" bpmnElement="Gateway_0609ksb">
+        <dc:Bounds x="685" y="92" width="50" height="50" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_13ywwyw_di" bpmnElement="ProcEndedEndEvent">
+        <dc:Bounds x="952" y="99" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="942" y="142" width="56" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_1mpckuo_di" bpmnElement="InputTask">
+        <dc:Bounds x="270" y="77" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_1s6g8h0_di" bpmnElement="TaskATask">
+        <dc:Bounds x="530" y="77" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_1708myd_di" bpmnElement="TaskBTask">
+        <dc:Bounds x="530" y="190" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_0w7nyp5_di" bpmnElement="EndTaskTask">
+        <dc:Bounds x="790" y="77" width="100" height="80" />
+      </bpmndi:BPMNShape>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</bpmn:definitions>

@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:camunda="http://camunda.org/schema/1.0/bpmn" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:modeler="http://camunda.org/schema/modeler/1.0" id="Definitions_10ivgy8" targetNamespace="http://bpmn.io/schema/bpmn" exporter="Camunda Modeler" exporterVersion="4.8.1" modeler:executionPlatform="Camunda Platform" modeler:executionPlatformVersion="7.15.0">
+  <bpmn:collaboration id="event-link-event">
+    <bpmn:documentation>event-link-event</bpmn:documentation>
+    <bpmn:participant id="OrderingProcessParticipant" name="Ordering Process" processRef="EventLinkEvent" />
+  </bpmn:collaboration>
+  <bpmn:process id="EventLinkEvent" name="Event Link Event" isExecutable="true">
+    <bpmn:laneSet id="LaneSet_1jwazst">
+      <bpmn:lane id="ShipOrderProcessLane" name="Ship Order Process">
+        <bpmn:flowNodeRef>EndFlowEndEvent</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>ShipOrderTask</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>CatchEventEvent</bpmn:flowNodeRef>
+      </bpmn:lane>
+      <bpmn:lane id="ReceiveOrderProcessLane" name="Receive Order Process">
+        <bpmn:flowNodeRef>StartFlowStartEvent</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>ReceiveOrderTask</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>ThrowEventEvent</bpmn:flowNodeRef>
+      </bpmn:lane>
+    </bpmn:laneSet>
+    <bpmn:startEvent id="StartFlowStartEvent" name="Start Flow">
+      <bpmn:outgoing>Flow_0n5eewr</bpmn:outgoing>
+    </bpmn:startEvent>
+    <bpmn:endEvent id="EndFlowEndEvent" name="End Flow">
+      <bpmn:incoming>Flow_0h8gdi4</bpmn:incoming>
+    </bpmn:endEvent>
+    <bpmn:userTask id="ReceiveOrderTask" name="Receive Order">
+      <bpmn:extensionElements>
+        <camunda:formData>
+          <camunda:formField id="order_item" label="Enter order item name" type="string" />
+        </camunda:formData>
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_0n5eewr</bpmn:incoming>
+      <bpmn:outgoing>Flow_0roe5qg</bpmn:outgoing>
+    </bpmn:userTask>
+    <bpmn:userTask id="ShipOrderTask" name="Ship Order">
+      <bpmn:incoming>Flow_1xe6wn4</bpmn:incoming>
+      <bpmn:outgoing>Flow_0h8gdi4</bpmn:outgoing>
+    </bpmn:userTask>
+    <bpmn:intermediateThrowEvent id="ThrowEventEvent" name="Throw Event">
+      <bpmn:incoming>Flow_0roe5qg</bpmn:incoming>
+      <bpmn:linkEventDefinition id="LinkEventDefinition_1oi0oyi" name="MyLinkEvent" />
+    </bpmn:intermediateThrowEvent>
+    <bpmn:intermediateCatchEvent id="CatchEventEvent" name="Catch Event">
+      <bpmn:outgoing>Flow_1xe6wn4</bpmn:outgoing>
+      <bpmn:linkEventDefinition id="LinkEventDefinition_0bfp2ww" name="MyLinkEvent" />
+    </bpmn:intermediateCatchEvent>
+    <bpmn:sequenceFlow id="Flow_0n5eewr" sourceRef="StartFlowStartEvent" targetRef="ReceiveOrderTask" />
+    <bpmn:sequenceFlow id="Flow_0roe5qg" sourceRef="ReceiveOrderTask" targetRef="ThrowEventEvent" />
+    <bpmn:sequenceFlow id="Flow_1xe6wn4" sourceRef="CatchEventEvent" targetRef="ShipOrderTask" />
+    <bpmn:sequenceFlow id="Flow_0h8gdi4" sourceRef="ShipOrderTask" targetRef="EndFlowEndEvent" />
+  </bpmn:process>
+  <bpmndi:BPMNDiagram id="BPMNDiagram_1">
+    <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="event-link-event">
+      <bpmndi:BPMNShape id="Participant_17epuq0_di" bpmnElement="OrderingProcessParticipant" isHorizontal="true">
+        <dc:Bounds x="129" y="79" width="600" height="251" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Lane_0x5oi4c_di" bpmnElement="ShipOrderProcessLane" isHorizontal="true">
+        <dc:Bounds x="159" y="210" width="570" height="120" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Lane_0myuerg_di" bpmnElement="ReceiveOrderProcessLane" isHorizontal="true">
+        <dc:Bounds x="159" y="79" width="570" height="131" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="Flow_0n5eewr_di" bpmnElement="Flow_0n5eewr">
+        <di:waypoint x="238" y="150" />
+        <di:waypoint x="290" y="150" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0roe5qg_di" bpmnElement="Flow_0roe5qg">
+        <di:waypoint x="390" y="150" />
+        <di:waypoint x="442" y="150" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1xe6wn4_di" bpmnElement="Flow_1xe6wn4">
+        <di:waypoint x="238" y="270" />
+        <di:waypoint x="290" y="270" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0h8gdi4_di" bpmnElement="Flow_0h8gdi4">
+        <di:waypoint x="390" y="270" />
+        <di:waypoint x="442" y="270" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNShape id="_BPMNShape_StartEvent_2" bpmnElement="StartFlowStartEvent">
+        <dc:Bounds x="202" y="132" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="195" y="175" width="51" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_0ssmpuy_di" bpmnElement="EndFlowEndEvent">
+        <dc:Bounds x="442" y="252" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="437" y="295" width="47" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_0siu4bd_di" bpmnElement="ReceiveOrderTask">
+        <dc:Bounds x="290" y="110" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_02chpj6_di" bpmnElement="ShipOrderTask">
+        <dc:Bounds x="290" y="230" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_1j0jcn9_di" bpmnElement="ThrowEventEvent">
+        <dc:Bounds x="442" y="132" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="429" y="175" width="62" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_0qm7y8n_di" bpmnElement="CatchEventEvent">
+        <dc:Bounds x="202" y="252" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="190" y="295" width="61" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</bpmn:definitions>

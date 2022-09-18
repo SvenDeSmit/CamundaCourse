@@ -1,0 +1,264 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:camunda="http://camunda.org/schema/1.0/bpmn" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:bioc="http://bpmn.io/schema/bpmn/biocolor/1.0" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:modeler="http://camunda.org/schema/modeler/1.0" id="Definitions_14j5fgr" targetNamespace="http://bpmn.io/schema/bpmn" exporter="Camunda Modeler" exporterVersion="4.8.1" modeler:executionPlatform="Camunda Platform" modeler:executionPlatformVersion="7.15.0">
+  <bpmn:process id="EscalationNonInterruptingEventProcess" name="Escalation Non Interrupting Event" isExecutable="true" camunda:versionTag="v1.0">
+    <bpmn:startEvent id="StartProcessStartEvent" name="Start process">
+      <bpmn:outgoing>Flow_0p1056t</bpmn:outgoing>
+    </bpmn:startEvent>
+    <bpmn:subProcess id="Activity_0jy6wm1">
+      <bpmn:incoming>Flow_0p1056t</bpmn:incoming>
+      <bpmn:outgoing>Flow_0s7odlz</bpmn:outgoing>
+      <bpmn:startEvent id="StartSubProcessStartEvent" name="Start Sub Process">
+        <bpmn:outgoing>Flow_0feto4z</bpmn:outgoing>
+      </bpmn:startEvent>
+      <bpmn:sequenceFlow id="Flow_0feto4z" sourceRef="StartSubProcessStartEvent" targetRef="EnterAndPickOrderTask" />
+      <bpmn:userTask id="EnterAndPickOrderTask" name="Enter and Pick Order" camunda:assignee="demo">
+        <bpmn:extensionElements>
+          <camunda:formData>
+            <camunda:formField id="shipping" label="shipping days" type="long" />
+            <camunda:formField id="item" label="item" type="string" />
+          </camunda:formData>
+        </bpmn:extensionElements>
+        <bpmn:incoming>Flow_0feto4z</bpmn:incoming>
+        <bpmn:outgoing>Flow_0exjiaw</bpmn:outgoing>
+      </bpmn:userTask>
+      <bpmn:endEvent id="EndSubProcessEndEvent" name="End Sub Process">
+        <bpmn:incoming>Flow_0mrmttb</bpmn:incoming>
+      </bpmn:endEvent>
+      <bpmn:sequenceFlow id="Flow_0exjiaw" sourceRef="EnterAndPickOrderTask" targetRef="Gateway_1qyxw7o" />
+      <bpmn:exclusiveGateway id="Gateway_188t6d0">
+        <bpmn:incoming>Flow_0eoaa74</bpmn:incoming>
+        <bpmn:outgoing>SoonShippingSequenceFlow</bpmn:outgoing>
+        <bpmn:outgoing>LateShippingSequenceFlow</bpmn:outgoing>
+      </bpmn:exclusiveGateway>
+      <bpmn:sequenceFlow id="SoonShippingSequenceFlow" name="soonShipping" sourceRef="Gateway_188t6d0" targetRef="ReceiveGoodsTask">
+        <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${shipping &lt;= 2}</bpmn:conditionExpression>
+      </bpmn:sequenceFlow>
+      <bpmn:sequenceFlow id="Flow_0mrmttb" sourceRef="ReceiveGoodsTask" targetRef="EndSubProcessEndEvent" />
+      <bpmn:userTask id="ReceiveGoodsTask" name="Receive Goods" camunda:assignee="demo">
+        <bpmn:incoming>SoonShippingSequenceFlow</bpmn:incoming>
+        <bpmn:incoming>Flow_1z0g3yz</bpmn:incoming>
+        <bpmn:outgoing>Flow_0mrmttb</bpmn:outgoing>
+      </bpmn:userTask>
+      <bpmn:sequenceFlow id="LateShippingSequenceFlow" name="lateShipping" sourceRef="Gateway_188t6d0" targetRef="LateShippingEventEvent">
+        <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${shipping &gt; 2}</bpmn:conditionExpression>
+      </bpmn:sequenceFlow>
+      <bpmn:intermediateThrowEvent id="LateShippingEventEvent" name="Late Shipping Event">
+        <bpmn:incoming>LateShippingSequenceFlow</bpmn:incoming>
+        <bpmn:outgoing>Flow_1z0g3yz</bpmn:outgoing>
+        <bpmn:escalationEventDefinition id="EscalationEventDefinition_01em6d1" escalationRef="Escalation_1mgu0u0" />
+      </bpmn:intermediateThrowEvent>
+      <bpmn:sequenceFlow id="Flow_1z0g3yz" sourceRef="LateShippingEventEvent" targetRef="ReceiveGoodsTask" />
+      <bpmn:sequenceFlow id="CannotOrderDesktopSequenceFlow" name="Cannot order desktop" sourceRef="Gateway_1qyxw7o" targetRef="DesktopErrorEndEvent">
+        <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${item == "desktop"}</bpmn:conditionExpression>
+      </bpmn:sequenceFlow>
+      <bpmn:endEvent id="DesktopErrorEndEvent" name="Desktop Error">
+        <bpmn:incoming>CannotOrderDesktopSequenceFlow</bpmn:incoming>
+        <bpmn:errorEventDefinition id="ErrorEventDefinition_10g4lc3" errorRef="Error_0d8t81y" />
+      </bpmn:endEvent>
+      <bpmn:exclusiveGateway id="Gateway_1qyxw7o">
+        <bpmn:incoming>Flow_0exjiaw</bpmn:incoming>
+        <bpmn:outgoing>Flow_0eoaa74</bpmn:outgoing>
+        <bpmn:outgoing>CannotOrderDesktopSequenceFlow</bpmn:outgoing>
+      </bpmn:exclusiveGateway>
+      <bpmn:sequenceFlow id="Flow_0eoaa74" sourceRef="Gateway_1qyxw7o" targetRef="Gateway_188t6d0" />
+    </bpmn:subProcess>
+    <bpmn:sequenceFlow id="Flow_0p1056t" sourceRef="StartProcessStartEvent" targetRef="Activity_0jy6wm1" />
+    <bpmn:sequenceFlow id="Flow_0s7odlz" sourceRef="Activity_0jy6wm1" targetRef="SendOrderTask" />
+    <bpmn:endEvent id="EndProcessEndEvent" name="End Process">
+      <bpmn:incoming>Flow_1358wwy</bpmn:incoming>
+    </bpmn:endEvent>
+    <bpmn:sequenceFlow id="Flow_1358wwy" sourceRef="SendOrderTask" targetRef="EndProcessEndEvent" />
+    <bpmn:userTask id="SendOrderTask" name="Send order" camunda:assignee="demo">
+      <bpmn:incoming>Flow_0s7odlz</bpmn:incoming>
+      <bpmn:outgoing>Flow_1358wwy</bpmn:outgoing>
+    </bpmn:userTask>
+    <bpmn:sequenceFlow id="Flow_1mw63ra" sourceRef="LateShippingReceivedBoundaryEvent" targetRef="SendLateShippingMailTask" />
+    <bpmn:userTask id="SendLateShippingMailTask" name="Send late shipping mail" camunda:assignee="demo">
+      <bpmn:incoming>Flow_1mw63ra</bpmn:incoming>
+      <bpmn:outgoing>Flow_19y3fpg</bpmn:outgoing>
+    </bpmn:userTask>
+    <bpmn:endEvent id="Event_1m6e0gk">
+      <bpmn:incoming>Flow_19y3fpg</bpmn:incoming>
+    </bpmn:endEvent>
+    <bpmn:sequenceFlow id="Flow_19y3fpg" sourceRef="SendLateShippingMailTask" targetRef="Event_1m6e0gk" />
+    <bpmn:boundaryEvent id="DesktopErrorReceivedBoundaryEvent" name="Desktop Error Received" attachedToRef="Activity_0jy6wm1">
+      <bpmn:outgoing>Flow_15scmz4</bpmn:outgoing>
+      <bpmn:errorEventDefinition id="ErrorEventDefinition_0t0ojp7" errorRef="Error_0d8t81y" />
+    </bpmn:boundaryEvent>
+    <bpmn:sequenceFlow id="Flow_15scmz4" sourceRef="DesktopErrorReceivedBoundaryEvent" targetRef="CancelOrderTask" />
+    <bpmn:endEvent id="Event_1c73v9s">
+      <bpmn:incoming>Flow_05y9rb6</bpmn:incoming>
+    </bpmn:endEvent>
+    <bpmn:sequenceFlow id="Flow_05y9rb6" sourceRef="CancelOrderTask" targetRef="Event_1c73v9s" />
+    <bpmn:userTask id="CancelOrderTask" name="Cancel order" camunda:assignee="demo">
+      <bpmn:incoming>Flow_15scmz4</bpmn:incoming>
+      <bpmn:outgoing>Flow_05y9rb6</bpmn:outgoing>
+    </bpmn:userTask>
+    <bpmn:boundaryEvent id="LateShippingReceivedBoundaryEvent" name="Late Shipping Received" attachedToRef="Activity_0jy6wm1">
+      <bpmn:outgoing>Flow_1mw63ra</bpmn:outgoing>
+      <bpmn:escalationEventDefinition id="EscalationEventDefinition_19s9aso" escalationRef="Escalation_1mgu0u0" />
+    </bpmn:boundaryEvent>
+  </bpmn:process>
+  <bpmn:escalation id="Escalation_0l3kxg0" name="Escalation_3a2ecm5" />
+  <bpmn:escalation id="Escalation_1mgu0u0" name="late_shipping" escalationCode="late_shipping" />
+  <bpmn:error id="Error_0d8t81y" name="not_shippable" errorCode="not_shippable" />
+  <bpmndi:BPMNDiagram id="BPMNDiagram_1">
+    <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="EscalationNonInterruptingEventProcess">
+      <bpmndi:BPMNEdge id="Flow_05y9rb6_di" bpmnElement="Flow_05y9rb6">
+        <di:waypoint x="590" y="570" />
+        <di:waypoint x="642" y="570" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_15scmz4_di" bpmnElement="Flow_15scmz4">
+        <di:waypoint x="420" y="505" />
+        <di:waypoint x="420" y="570" />
+        <di:waypoint x="490" y="570" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_19y3fpg_di" bpmnElement="Flow_19y3fpg">
+        <di:waypoint x="910" y="590" />
+        <di:waypoint x="936" y="590" />
+        <di:waypoint x="936" y="460" />
+        <di:waypoint x="962" y="460" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1mw63ra_di" bpmnElement="Flow_1mw63ra">
+        <di:waypoint x="740" y="505" />
+        <di:waypoint x="740" y="590" />
+        <di:waypoint x="810" y="590" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1358wwy_di" bpmnElement="Flow_1358wwy" bioc:stroke="#000" bioc:fill="#fff">
+        <di:waypoint x="1120" y="229" />
+        <di:waypoint x="1172" y="229" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0s7odlz_di" bpmnElement="Flow_0s7odlz" bioc:stroke="#000" bioc:fill="#fff">
+        <di:waypoint x="970" y="229" />
+        <di:waypoint x="1020" y="229" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0p1056t_di" bpmnElement="Flow_0p1056t" bioc:stroke="#000" bioc:fill="#fff">
+        <di:waypoint x="215" y="177" />
+        <di:waypoint x="260" y="177" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNShape id="_BPMNShape_StartEvent_2" bpmnElement="StartProcessStartEvent" bioc:stroke="#000" bioc:fill="#fff">
+        <dc:Bounds x="179" y="159" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="165" y="202" width="66" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_0jy6wm1_di" bpmnElement="Activity_0jy6wm1" isExpanded="true" bioc:stroke="#000" bioc:fill="#fff">
+        <dc:Bounds x="260" y="77" width="710" height="410" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="Flow_0eoaa74_di" bpmnElement="Flow_0eoaa74">
+        <di:waypoint x="555" y="177" />
+        <di:waypoint x="585" y="177" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1h86kpc_di" bpmnElement="CannotOrderDesktopSequenceFlow">
+        <di:waypoint x="530" y="202" />
+        <di:waypoint x="530" y="400" />
+        <di:waypoint x="662" y="400" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="513" y="298" width="66" height="27" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1z0g3yz_di" bpmnElement="Flow_1z0g3yz" bioc:stroke="#000" bioc:fill="#fff">
+        <di:waypoint x="660" y="272" />
+        <di:waypoint x="660" y="245" />
+        <di:waypoint x="810" y="245" />
+        <di:waypoint x="810" y="217" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0xnxss8_di" bpmnElement="LateShippingSequenceFlow" bioc:stroke="#999" bioc:fill="#fff">
+        <di:waypoint x="610" y="202" />
+        <di:waypoint x="610" y="290" />
+        <di:waypoint x="642" y="290" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="596" y="243" width="61" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0mrmttb_di" bpmnElement="Flow_0mrmttb" bioc:stroke="#000" bioc:fill="#fff">
+        <di:waypoint x="860" y="177" />
+        <di:waypoint x="902" y="177" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_05zf617_di" bpmnElement="SoonShippingSequenceFlow" bioc:stroke="#000" bioc:fill="#fff">
+        <di:waypoint x="635" y="177" />
+        <di:waypoint x="760" y="177" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="665" y="159" width="67" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0exjiaw_di" bpmnElement="Flow_0exjiaw" bioc:stroke="#000" bioc:fill="#fff">
+        <di:waypoint x="490" y="177" />
+        <di:waypoint x="505" y="177" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0feto4z_di" bpmnElement="Flow_0feto4z" bioc:stroke="#000" bioc:fill="#fff">
+        <di:waypoint x="336" y="177" />
+        <di:waypoint x="390" y="177" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNShape id="Event_0ls7fqk_di" bpmnElement="StartSubProcessStartEvent" bioc:stroke="#000" bioc:fill="#fff">
+        <dc:Bounds x="300" y="159" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="276" y="202" width="90" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_07wfgxj_di" bpmnElement="EnterAndPickOrderTask" bioc:stroke="#000" bioc:fill="#fff">
+        <dc:Bounds x="390" y="137" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_08zjsd8_di" bpmnElement="EndSubProcessEndEvent" bioc:stroke="#000" bioc:fill="#fff">
+        <dc:Bounds x="902" y="159" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="879" y="202" width="86" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Gateway_188t6d0_di" bpmnElement="Gateway_188t6d0" isMarkerVisible="true" bioc:stroke="#000" bioc:fill="#fff">
+        <dc:Bounds x="585" y="152" width="50" height="50" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_1emzch5_di" bpmnElement="ReceiveGoodsTask" bioc:stroke="#000" bioc:fill="#fff">
+        <dc:Bounds x="760" y="137" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_1k64y7w_di" bpmnElement="LateShippingEventEvent" bioc:stroke="#000" bioc:fill="#fff">
+        <dc:Bounds x="642" y="272" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="628" y="315" width="68" height="27" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_1ae04ei_di" bpmnElement="DesktopErrorEndEvent">
+        <dc:Bounds x="662" y="382" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="645" y="425" width="70" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Gateway_1qyxw7o_di" bpmnElement="Gateway_1qyxw7o" isMarkerVisible="true">
+        <dc:Bounds x="505" y="152" width="50" height="50" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_0ax0115_di" bpmnElement="EndProcessEndEvent" bioc:stroke="#000" bioc:fill="#fff">
+        <dc:Bounds x="1172" y="211" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="1159" y="254" width="63" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_1mud7bl_di" bpmnElement="SendOrderTask" bioc:stroke="#000" bioc:fill="#fff">
+        <dc:Bounds x="1020" y="189" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_19q75vf_di" bpmnElement="SendLateShippingMailTask">
+        <dc:Bounds x="810" y="550" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_1m6e0gk_di" bpmnElement="Event_1m6e0gk">
+        <dc:Bounds x="962" y="442" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_1c73v9s_di" bpmnElement="Event_1c73v9s">
+        <dc:Bounds x="642" y="552" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_1m4328v_di" bpmnElement="CancelOrderTask">
+        <dc:Bounds x="490" y="530" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_04ip2rd_di" bpmnElement="DesktopErrorReceivedBoundaryEvent">
+        <dc:Bounds x="402" y="469" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="385" y="512" width="70" height="27" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_0dn04rz_di" bpmnElement="LateShippingReceivedBoundaryEvent">
+        <dc:Bounds x="722" y="469" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="710" y="512" width="68" height="27" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</bpmn:definitions>

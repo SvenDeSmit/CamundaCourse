@@ -1,0 +1,131 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:camunda="http://camunda.org/schema/1.0/bpmn" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:modeler="http://camunda.org/schema/modeler/1.0" id="Definitions_0hllji1" targetNamespace="http://bpmn.io/schema/bpmn" exporter="Camunda Modeler" exporterVersion="4.8.1" modeler:executionPlatform="Camunda Platform" modeler:executionPlatformVersion="7.15.0">
+  <bpmn:process id="CallactivityProcess" name="call-activity" isExecutable="true" camunda:versionTag="v1">
+    <bpmn:startEvent id="OrderReceivedStartEvent" name="Order received">
+      <bpmn:outgoing>Flow_1qdcqa8</bpmn:outgoing>
+    </bpmn:startEvent>
+    <bpmn:sequenceFlow id="Flow_1qdcqa8" sourceRef="OrderReceivedStartEvent" targetRef="PlaceTheOrderTask" />
+    <bpmn:sequenceFlow id="Flow_1xwkpee" sourceRef="PlaceTheOrderTask" targetRef="ValidateTheOrderCallActivity" />
+    <bpmn:exclusiveGateway id="IsValidGateway" name="isValid?">
+      <bpmn:incoming>Flow_0l56aq4</bpmn:incoming>
+      <bpmn:outgoing>YesSequenceFlow</bpmn:outgoing>
+      <bpmn:outgoing>NoSequenceFlow</bpmn:outgoing>
+    </bpmn:exclusiveGateway>
+    <bpmn:sequenceFlow id="Flow_0l56aq4" sourceRef="ValidateTheOrderCallActivity" targetRef="IsValidGateway" />
+    <bpmn:sequenceFlow id="YesSequenceFlow" name="Yes" sourceRef="IsValidGateway" targetRef="ShipTheOrderTask">
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${isValid == true}</bpmn:conditionExpression>
+    </bpmn:sequenceFlow>
+    <bpmn:sequenceFlow id="NoSequenceFlow" name="No" sourceRef="IsValidGateway" targetRef="SendRefusalMailTask">
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${isValid == false}</bpmn:conditionExpression>
+    </bpmn:sequenceFlow>
+    <bpmn:endEvent id="OrderShippedEndEvent" name="Order shipped">
+      <bpmn:incoming>Flow_1fvmbkz</bpmn:incoming>
+    </bpmn:endEvent>
+    <bpmn:sequenceFlow id="Flow_1fvmbkz" sourceRef="ShipTheOrderTask" targetRef="OrderShippedEndEvent" />
+    <bpmn:endEvent id="OrderRefusedEndEvent" name="Order refused">
+      <bpmn:incoming>Flow_1p5v9du</bpmn:incoming>
+    </bpmn:endEvent>
+    <bpmn:sequenceFlow id="Flow_1p5v9du" sourceRef="SendRefusalMailTask" targetRef="OrderRefusedEndEvent" />
+    <bpmn:userTask id="ShipTheOrderTask" name="Ship the order" camunda:assignee="demo">
+      <bpmn:incoming>YesSequenceFlow</bpmn:incoming>
+      <bpmn:outgoing>Flow_1fvmbkz</bpmn:outgoing>
+    </bpmn:userTask>
+    <bpmn:userTask id="SendRefusalMailTask" name="Send refusal mail" camunda:assignee="demo">
+      <bpmn:incoming>NoSequenceFlow</bpmn:incoming>
+      <bpmn:outgoing>Flow_1p5v9du</bpmn:outgoing>
+    </bpmn:userTask>
+    <bpmn:userTask id="PlaceTheOrderTask" name="Place the order" camunda:assignee="demo">
+      <bpmn:extensionElements>
+        <camunda:formData>
+          <camunda:formField id="product" label="Product name" type="string" />
+          <camunda:formField id="shipment" label="Shipment type" type="string" />
+        </camunda:formData>
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_1qdcqa8</bpmn:incoming>
+      <bpmn:outgoing>Flow_1xwkpee</bpmn:outgoing>
+    </bpmn:userTask>
+    <bpmn:callActivity id="ValidateTheOrderCallActivity" name="Validate the order" calledElement="CallactivityvalidatorProcess">
+      <bpmn:extensionElements>
+        <camunda:in variables="all" />
+        <camunda:out variables="all" />
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_1xwkpee</bpmn:incoming>
+      <bpmn:outgoing>Flow_0l56aq4</bpmn:outgoing>
+    </bpmn:callActivity>
+  </bpmn:process>
+  <bpmndi:BPMNDiagram id="BPMNDiagram_1">
+    <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="CallactivityProcess">
+      <bpmndi:BPMNEdge id="Flow_1qdcqa8_di" bpmnElement="Flow_1qdcqa8">
+        <di:waypoint x="215" y="97" />
+        <di:waypoint x="270" y="97" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1xwkpee_di" bpmnElement="Flow_1xwkpee">
+        <di:waypoint x="370" y="97" />
+        <di:waypoint x="430" y="97" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0l56aq4_di" bpmnElement="Flow_0l56aq4">
+        <di:waypoint x="530" y="97" />
+        <di:waypoint x="595" y="97" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0y26aw6_di" bpmnElement="YesSequenceFlow">
+        <di:waypoint x="645" y="97" />
+        <di:waypoint x="710" y="97" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="669" y="79" width="18" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_104lquu_di" bpmnElement="NoSequenceFlow">
+        <di:waypoint x="620" y="122" />
+        <di:waypoint x="620" y="210" />
+        <di:waypoint x="710" y="210" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="628" y="163" width="15" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1fvmbkz_di" bpmnElement="Flow_1fvmbkz">
+        <di:waypoint x="810" y="97" />
+        <di:waypoint x="882" y="97" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1p5v9du_di" bpmnElement="Flow_1p5v9du">
+        <di:waypoint x="810" y="210" />
+        <di:waypoint x="882" y="210" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNShape id="_BPMNShape_StartEvent_2" bpmnElement="OrderReceivedStartEvent">
+        <dc:Bounds x="179" y="79" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="161" y="122" width="73" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Gateway_09gvwyp_di" bpmnElement="IsValidGateway" isMarkerVisible="true">
+        <dc:Bounds x="595" y="72" width="50" height="50" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="601" y="42" width="38" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_1afr48e_di" bpmnElement="OrderShippedEndEvent">
+        <dc:Bounds x="882" y="79" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="865" y="122" width="70" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_1arzszv_di" bpmnElement="OrderRefusedEndEvent">
+        <dc:Bounds x="882" y="192" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="866" y="235" width="68" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_1qnntot_di" bpmnElement="ShipTheOrderTask">
+        <dc:Bounds x="710" y="57" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_1n9j8m0_di" bpmnElement="SendRefusalMailTask">
+        <dc:Bounds x="710" y="170" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_0f7z1ce_di" bpmnElement="PlaceTheOrderTask">
+        <dc:Bounds x="270" y="57" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_117fq5w_di" bpmnElement="ValidateTheOrderCallActivity">
+        <dc:Bounds x="430" y="57" width="100" height="80" />
+      </bpmndi:BPMNShape>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</bpmn:definitions>
